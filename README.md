@@ -18,7 +18,8 @@ Once you have complete the above guide, continue to the steps below.
 
 ## API Spec
 
-[TODO]: <Deploy and update the link below>
+[todo]: <Deploy and update the link below>
+
 [Deployed API Spec](https://UPDATEME)
 
 The API Spec is hosted by the server itself (i.e. this project), and the view/page is generated automatically by the SwaggerUI libraryi.
@@ -33,5 +34,6 @@ Whenever you make any change to the API (e.g. adding a new route, changing the p
 
 ## DATABASE ERD
 
-[TODO]: <Update this with your ERD>
+[todo]: <Update this with your ERD>
+
 TODO
