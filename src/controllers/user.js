@@ -1,6 +1,5 @@
 import User from '../domain/user.js'
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
-import { validateTeacherRole } from '../middleware/auth.js'
 
 export const create = async (req, res) => {
   const userToCreate = await User.fromJson(req.body)

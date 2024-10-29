@@ -1,5 +1,10 @@
 import { Router } from 'express'
-import { create, getById, getAll, updateById, changeUserRole } from '../controllers/user.js'
+import { create,
+  getById,
+  getAll,
+  updateById,
+  changeUserRole
+} from '../controllers/user.js'
 import {
   validateAuthentication,
   validateTeacherRole
@@ -11,6 +16,10 @@ router.post('/', create)
 router.get('/', validateAuthentication, getAll)
 router.get('/:id', validateAuthentication, getById)
 router.patch('/:id', validateAuthentication, validateTeacherRole, updateById)
-router.put('/changeUserRole', validateAuthentication, validateTeacherRole, changeUserRole)
+router.put('/changeUserRole',
+  validateAuthentication,
+  validateTeacherRole,
+  changeUserRole
+)
 
 export default router
