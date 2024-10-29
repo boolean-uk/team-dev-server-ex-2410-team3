@@ -42,14 +42,18 @@ model Profile {
 model Cohort {
   id            Int           @id @default(autoincrement())
   users         User[]
+  createdAt     DateTime
+  updatedAt     DateTime
   deliveryLogs  DeliveryLog[]
 }
 
 model Post {
-  id      Int           @id @default(autoincrement())
-  content String
-  userId  Int
-  user    User          @relation(fields: [userId], references: [id])
+  id        Int           @id @default(autoincrement())
+  content   String
+  createdAt DateTime
+  updatedAt DateTime
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
   comments  Comment[]
 }
 
