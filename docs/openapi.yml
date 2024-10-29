@@ -11,6 +11,7 @@ tags:
   - name: post
   - name: cohort
   - name: log
+  - name: comment
 paths:
   /users:
     post:
@@ -285,6 +286,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /comments:
+    post:
+      tags:
+        - comment
+      summary: Create a new comment
+      description: Allows a logged-in user to create a comment.
+      operationId: createComment
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Comment creation payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        '201':
+          description: Comment successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - comment
+      summary: Retrieve all comments
+      description: Get a list of all comments.
+      operationId: getAllComments
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllComments'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   securitySchemes:
@@ -535,3 +586,63 @@ components:
                         type: integer
                       content:
                         type: string
+    CreateComment:
+      type: object
+      properties:
+        content:
+          type: string
+          description: The content of the comment
+        postId:
+          type: integer
+          description: The ID of the post to which the comment belongs
+
+    CommentResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            comment:
+              $ref: '#/components/schemas/Comment'
+
+    AllComments:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        postId:
+          type: integer
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+            firstName:
+              type: string
+            lastName:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
