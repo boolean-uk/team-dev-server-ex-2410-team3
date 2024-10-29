@@ -65,3 +65,40 @@ export const updateById = async (req, res) => {
 
   return sendDataResponse(res, 201, { user: { cohort_id: cohortId } })
 }
+
+export const updateLoggedInUser = async (req, res) => {
+  const { firstName, lastName, email, bio, githubUrl, password } = req.body
+
+  // password validation
+  if (
+    password.length < 8 || // Check for password length to be at least 8
+    !/[A-Z]/.test(password) || // Check for at least one uppercase letter
+    !/[!@#$%^&*(),.?":{}|<>]/.test(password) || // Check for at least one special character
+    !/\d/.test(password) // Check for at least one digit
+  ) {
+    return sendDataResponse(res, 401, {
+      status: 'fail',
+      message:
+        'The password should be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'
+    })
+  }
+
+  try {
+    const userId = req.user.id // Make sure we have a method of getting the logged-in user's ID
+
+    const updatedUser = await User.update({
+      where: { id: userId },
+      data: {
+        firstName,
+        lastName,
+        email,
+        bio,
+        githubUrl,
+        password
+      }
+    })
+    return sendDataResponse(res, 201, { user: updatedUser })
+  } catch (error) {
+    return sendMessageResponse(res, 401, error.message)
+  }
+}

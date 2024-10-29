@@ -11,7 +11,64 @@ tags:
   - name: post
   - name: cohort
   - name: log
+
 paths:
+  /loggedInUser:
+    put:
+      tags:
+        - User
+      summary: Update logged-in user
+      description: Updates the information of the logged-in user.
+      operationId: updateLoggedInUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                bio:
+                  type: string
+                githubUrl:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
   /users:
     post:
       tags:
@@ -430,7 +487,7 @@ components:
                         type: string
                       profileImageUrl:
                         type: string
-    
+
     CreatedUser:
       type: object
       properties:
