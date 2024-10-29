@@ -5,11 +5,8 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-<<<<<<< Updated upstream
-=======
     "test": "jasmine",
     "test:coverage": "nyc jasmine",
->>>>>>> Stashed changes
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "db-reset": "prisma migrate reset",
