@@ -285,6 +285,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - cohort
+      summary: Get all cohorts
+      description: Get all cohorts
+      operationId: getCohorts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCohorts'
 
 components:
   securitySchemes:
@@ -312,12 +327,57 @@ components:
       properties:
         id:
           type: integer
+        name:
+          type: string
         createdAt:
           type: string
           format: string
         updatedAt:
           type: string
           format: string
+        startDate:
+          type: string
+          format: string
+        endDate:
+          type: string
+          format: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserNoCohorts'
+
+    CohortNoUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: string
+        updatedAt:
+          type: string
+          format: string
+        startDate:
+          type: string
+          format: string
+        endDate:
+          type: string
+          format: string
+
+    AllCohorts:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: object
+          properties:
+            cohorts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cohort'
 
     AllUsers:
       type: object
@@ -333,6 +393,26 @@ components:
                 $ref: '#/components/schemas/User'
 
     User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        role:
+          type: string
+        cohortId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        bio:
+          type: string
+        githubUrl:
+          type: string
+
+    UserNoCohorts:
       type: object
       properties:
         id:
