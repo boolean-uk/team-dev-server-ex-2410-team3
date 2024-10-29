@@ -21,6 +21,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        
+      - name: Install Jasmine
+        run: npm install jasmine --save-dev
+
+      - name: Initialize Jasmine
+        run: npx jasmine init
 
       - name: Run tests with coverage
         run: npm run test:coverage

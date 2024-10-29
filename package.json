@@ -15,16 +15,23 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "nyc": {
-  "reporter": ["text", "lcov"],
-  "all": true,
-  "include": ["src/**/*.js"],
-  "exclude": ["**/spec/**"], 
-  "check-coverage": true,
-  "statements": 50, 
-  "branches": 50,
-  "functions": 50,
-  "lines": 50
-},
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "all": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "**/spec/**"
+    ],
+    "check-coverage": true,
+    "statements": 50,
+    "branches": 50,
+    "functions": 50,
+    "lines": 50
+  },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
@@ -48,6 +55,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.0",
+    "jasmine": "^5.4.0",
     "nodemon": "^2.0.15",
     "nyc": "^17.1.0",
     "prettier": "^2.6.2",
