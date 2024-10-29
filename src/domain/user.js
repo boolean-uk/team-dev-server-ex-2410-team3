@@ -80,6 +80,22 @@ export default class User {
   }
 
   /**
+   * Update a user's role by their ID
+   * @param {number} id - The ID of the user
+   * @param {string} role - The new role to set (e.g., 'TEACHER')
+   * @returns {User|null} - The updated user or null if not found
+   */
+  static async updateRoleById(id, role) {
+    const updatedUser = await dbClient.user.update({
+      where: { id },
+      data: { role },
+      include: { profile: true }
+    })
+
+    return updatedUser ? User.fromDb(updatedUser) : null
+  }
+
+  /**
    * @returns {User}
    *  A user instance containing an ID, representing the user data created in the database
    */

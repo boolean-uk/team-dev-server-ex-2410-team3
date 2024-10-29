@@ -1,5 +1,6 @@
 import User from '../domain/user.js'
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
+import { validateTeacherRole } from '../middleware/auth.js'
 
 export const create = async (req, res) => {
   const userToCreate = await User.fromJson(req.body)
@@ -64,4 +65,19 @@ export const updateById = async (req, res) => {
   }
 
   return sendDataResponse(res, 201, { user: { cohort_id: cohortId } })
+}
+
+export const changeUserRole = async (req, res) => {
+  const { userId } = req.body
+
+  if (!validateTeacherRole(req.user.id)) {
+    return sendMessageResponse(res, 401, 'Only a teacher can change a student\'s role to teacher')
+  }
+
+  try {
+    const updatedUser = await User.updateRoleById(userId, 'TEACHER')
+    return sendDataResponse(res, 201, { user: updatedUser })
+  } catch (error) {
+    return sendMessageResponse(res, 401, 'Unable to update user role')
+  }
 }
