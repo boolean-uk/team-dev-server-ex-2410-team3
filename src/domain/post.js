@@ -1,11 +1,6 @@
 import dbClient from '../utils/dbClient.js'
 
 export default class Post {
-  /**
-   * @param { { id: int, content: string, userId: int, User: { id: int, cohortId: int, email: string, Profile: { firstName: string, lastName: string, bio: string, githubUrl: string, profileImageUrl: string } } } } post
-   * @returns {Post}
-   */
-
   static fromDb(post) {
     return new Post(
       post.id,
@@ -34,12 +29,15 @@ export default class Post {
 
   // I've changed the name value at the bottom of this to match the open api's response with the user objects renamed as author.
   toJSON() {
+    console.log(this.user.profile)
+
     return {
       post: {
         id: this.id,
         content: this.content,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
+
         author: {
           id: this.user.id,
           cohortId: this.user.cohortId,
@@ -56,8 +54,26 @@ export default class Post {
 
   /**
    * @returns {Post}
-   *  A post instance containing an ID, representing the post data created in the database
+   *
    */
+
+  // I've made both the create method and the save method depending on what is prefered.
+  static async create({ content, userId }) {
+    const newPost = await dbClient.post.create({
+      data: {
+        content,
+        userId
+      },
+      include: {
+        user: {
+          include: {
+            profile: true
+          }
+        }
+      }
+    })
+    return newPost
+  }
 
   async save() {
     const data = {
@@ -87,10 +103,31 @@ export default class Post {
     return Post._findMany('userId', userId)
   }
 
+  static async _findByUnique(key, value) {
+    const foundPost = await dbClient.post.findUnique({
+      where: {
+        [key]: value
+      },
+      include: {
+        user: {
+          include: {
+            profile: true
+          }
+        }
+      }
+    })
+
+    return foundPost ? Post.fromDb(foundPost) : null
+  }
+
   static async _findMany(key, value) {
     const query = {
       include: {
-        user: true
+        user: {
+          include: {
+            profile: true
+          }
+        }
       }
     }
 
