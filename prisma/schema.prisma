@@ -51,10 +51,12 @@ model Cohort {
 }
 
 model Post {
-  id      Int           @id @default(autoincrement())
-  content String
-  userId  Int
-  user    User          @relation(fields: [userId], references: [id])
+  id        Int           @id @default(autoincrement())
+  content   String
+  createdAt DateTime
+  updatedAt DateTime
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
   comments  Comment[]
 }
 
