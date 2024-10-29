@@ -411,6 +411,10 @@ components:
           type: string
         githubUrl:
           type: string
+        cohorts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CohortNoUser'
 
     UserNoCohorts:
       type: object
