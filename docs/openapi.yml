@@ -13,10 +13,10 @@ tags:
   - name: log
 
 paths:
-  /loggedInUser:
+  /users/{id}/update:
     put:
       tags:
-        - User
+        - user
       summary: Update logged-in user
       description: Updates the information of the logged-in user.
       operationId: updateLoggedInUser
