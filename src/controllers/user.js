@@ -70,10 +70,6 @@ export const updateById = async (req, res) => {
 export const changeUserRole = async (req, res) => {
   const { userId } = req.body
 
-  if (!validateTeacherRole(req.user.id)) {
-    return sendMessageResponse(res, 401, 'Only a teacher can change a student\'s role to teacher')
-  }
-
   try {
     const updatedUser = await User.updateRoleById(userId, 'TEACHER')
     return sendDataResponse(res, 201, { user: updatedUser })
