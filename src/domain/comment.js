@@ -1,4 +1,4 @@
-import dbClient from '../utils/dbClient.js';
+import dbClient from '../utils/dbClient.js'
 
 export default class Comment {
   static async create({ postId, userId, content }) {
@@ -12,8 +12,8 @@ export default class Comment {
         user: { select: { id: true, email: true } },
         post: { select: { id: true } },
       },
-    });
-    return newComment;
+    })
+    return newComment
   }
 
   static async findByPostId(postId) {
@@ -23,6 +23,6 @@ export default class Comment {
         user: { select: { id: true, email: true, profile: true } },
       },
       orderBy: { createdAt: 'asc' },
-    });
+    })
   }
 }
