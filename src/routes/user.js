@@ -17,6 +17,6 @@ router.post('/', create)
 router.get('/', validateAuthentication, getAll)
 router.get('/:id', validateAuthentication, getById)
 router.patch('/:id', validateAuthentication, validateTeacherRole, updateById)
-router.put(':id/update', validateAuthentication, updateLoggedInUser)
+router.put('/:id/update', validateAuthentication, updateLoggedInUser)
 
 export default router
