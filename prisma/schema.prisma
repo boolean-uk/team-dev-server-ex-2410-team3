@@ -23,7 +23,7 @@ model User {
   role          Role      @default(STUDENT)
   profile       Profile?
   cohortId      Int?
-  cohort        Cohort?   @relation(fields: [cohortId], references: [id])
+  cohorts       Cohort[]
   posts         Post[]
   deliveryLogs  DeliveryLog[]
 }
@@ -39,9 +39,14 @@ model Profile {
 }
 
 model Cohort {
-  id            Int           @id @default(autoincrement())
-  users         User[]
-  deliveryLogs  DeliveryLog[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  startDate    DateTime
+  endDate      DateTime
+  createdAt    DateTime
+  updatedAt    DateTime
+  users        User[]
+  deliveryLogs DeliveryLog[] // keep 
 }
 
 model Post {
