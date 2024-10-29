@@ -6,12 +6,12 @@ export default class Comment {
       data: {
         postId,
         userId,
-        content,
+        content
       },
       include: {
         user: { select: { id: true, email: true } },
-        post: { select: { id: true } },
-      },
+        post: { select: { id: true } }
+      }
     })
     return newComment
   }
@@ -20,9 +20,9 @@ export default class Comment {
     return dbClient.comment.findMany({
       where: { postId },
       include: {
-        user: { select: { id: true, email: true, profile: true } },
+        user: { select: { id: true, email: true, profile: true } }
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'asc' }
     })
   }
 }

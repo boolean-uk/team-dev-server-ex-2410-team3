@@ -5,17 +5,19 @@ export const createComment = async (req, res) => {
   const { postId, content } = req.body
 
   if (!postId || !content) {
-    return sendDataResponse(res, 400, { message: 'Post ID and content are required' })
+    return sendDataResponse(res, 400, {
+      message: 'Post ID and content are required'
+    })
   }
 
   try {
     const comment = await Comment.create({
       postId: parseInt(postId),
       userId: req.user.id,
-      content,
+      content
     })
 
-    return sendDataResponse(res, 201, { comment });
+    return sendDataResponse(res, 201, { comment })
   } catch (error) {
     return sendMessageResponse(res, 500, 'Unable to create comment')
   }
