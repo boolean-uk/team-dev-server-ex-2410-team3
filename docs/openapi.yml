@@ -65,6 +65,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /users/changeUserRole:
+    put:
+      tags:
+        - user
+      summary: Change user role to TEACHER
+      description: Only users with a TEACHER role can change another user’s role to TEACHER.
+      operationId: changeUserRole
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Update a user’s role to TEACHER by user ID
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  description: ID of the user to be updated
+              required:
+                - userId
+      responses:
+        '201':
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedUser'
+        '401':
+          description: Unauthorized - Only a TEACHER can change a user's role to TEACHER
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: Bad Request - Invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /login:
     post:
       tags:
@@ -440,6 +482,7 @@ components:
         data:
           properties:
             user:
+              $ref: '#/components/schemas/User'
               properties:
                 id:
                   type: integer
