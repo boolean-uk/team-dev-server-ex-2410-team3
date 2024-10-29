@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "test": "jasmine",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "db-reset": "prisma migrate reset",
@@ -35,6 +36,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.0",
+    "jasmine": "^5.4.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",
     "prisma": "^3.15.2"
