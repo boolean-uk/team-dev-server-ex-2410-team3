@@ -69,12 +69,12 @@ export const updateById = async (req, res) => {
 export const updateLoggedInUser = async (req, res) => {
   const { firstName, lastName, email, bio, githubUrl, password } = req.body
 
-  // password validation
+  // Password validation
   if (
-    password.length < 8 || // Check for password length to be at least 8
-    !/[A-Z]/.test(password) || // Check for at least one uppercase letter
-    !/[!@#$%^&*(),.?":{}|<>]/.test(password) || // Check for at least one special character
-    !/\d/.test(password) // Check for at least one digit
+    password.length < 8 ||
+    !/[A-Z]/.test(password) ||
+    !/[!@#$%^&*(),.?":{}|<>]/.test(password) ||
+    !/\d/.test(password)
   ) {
     return sendDataResponse(res, 401, {
       status: 'fail',
@@ -84,21 +84,27 @@ export const updateLoggedInUser = async (req, res) => {
   }
 
   try {
-    const userId = req.user.id // Make sure we have a method of getting the logged-in user's ID
+    const userId = req.user.id // Ensure we have a method of getting the logged-in user's ID
 
     const updatedUser = await User.update({
       where: { id: userId },
       data: {
-        firstName,
-        lastName,
         email,
-        bio,
-        githubUrl,
-        password
+        password,
+        profile: {
+          update: {
+            firstName,
+            lastName,
+            bio,
+            githubUrl
+          }
+        }
       }
     })
+
     return sendDataResponse(res, 201, { user: updatedUser })
   } catch (error) {
-    return sendMessageResponse(res, 401, error.message)
+    console.error('Error updating user:', error.stack)
+    return sendMessageResponse(res, 500, 'Internal Server Error')
   }
 }

@@ -20,6 +20,15 @@ paths:
       summary: Update logged-in user
       description: Updates the information of the logged-in user.
       operationId: updateLoggedInUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'ID of user to update. '
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
