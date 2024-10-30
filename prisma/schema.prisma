@@ -51,14 +51,6 @@ model Cohort {
 }
 
 model Post {
-<<<<<<< HEAD
-  id      Int           @id @default(autoincrement())
-  content String
-  userId  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user    User          @relation(fields: [userId], references: [id])
-=======
   id        Int           @id @default(autoincrement())
   content   String
   createdAt DateTime
@@ -76,7 +68,6 @@ model Comment {
   postId    Int
   post      Post      @relation(fields: [postId], references: [id])
   createdAt DateTime  @default(now())
->>>>>>> 1e3f9009b62bf9924ba6a90f2e0c828de4b5e809
 }
 
 model DeliveryLog {
