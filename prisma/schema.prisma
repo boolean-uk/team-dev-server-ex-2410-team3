@@ -45,7 +45,7 @@ model Cohort {
   startDate    DateTime
   endDate      DateTime
   createdAt    DateTime
-  updatedAt    DateTime   
+  updatedAt    DateTime
   users        User[]
   deliveryLogs DeliveryLog[] // keep 
 }
@@ -54,7 +54,7 @@ model Post {
   id        Int           @id @default(autoincrement())
   content   String
   createdAt DateTime
-  updatedAt DateTime      
+  updatedAt DateTime
   userId    Int
   user      User          @relation(fields: [userId], references: [id])
   comments  Comment[]
