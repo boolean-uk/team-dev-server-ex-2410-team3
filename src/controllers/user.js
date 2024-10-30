@@ -67,8 +67,11 @@ export const updateById = async (req, res) => {
 }
 
 export const updateLoggedInUser = async (req, res) => {
-  const { firstName, lastName, email, bio, githubUrl, password } = req.body
+  let { firstName, lastName, email, bio, githubUrl, password } = req.body
 
+  if (!password) {
+    password = 'fail' // this prevents the program from crashing
+  }
   const userId = parseInt(req.params.id) // Get the user ID from the request parameters  // Password validation
   if (
     password.length < 8 ||
@@ -83,11 +86,35 @@ export const updateLoggedInUser = async (req, res) => {
     })
   }
 
+  const loggedInId = req.user.id //  the logged-in user's ID
+  const loggedInUser = await User.findById(loggedInId)
+  if (!loggedInUser) {
+    return sendDataResponse(res, 404, { id: 'Logged in user not found' })
+  }
+
+  if (loggedInUser.role === 'teacher') {
+    // do the update
+  } else if (loggedInUser.role === 'student' && loggedInId === userId) {
+    // do the update
+  } else {
+    return sendDataResponse(res, 403, {
+      id: 'Invalid request, students can only update themselves.'
+    })
+  }
+
   try {
     const foundUser = await User.findById(userId)
 
     if (!foundUser) {
       return sendDataResponse(res, 404, { id: 'User not found' })
+    }
+
+    if (email === '') {
+      email = foundUser.email
+    } else if (firstName === '') {
+      firstName = foundUser.firstName
+    } else if (lastName === '') {
+      lastName = foundUser.lastName
     }
 
     const updatedUser = await User.update({

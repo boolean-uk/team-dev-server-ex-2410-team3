@@ -18,7 +18,7 @@ paths:
       tags:
         - user
       summary: Update logged-in user
-      description: Updates the information of the logged-in user.
+      description: Updates the information of the user corressponding with the provided ID. A teacher can update any user while a student can only update themselves.
       operationId: updateLoggedInUser
       security:
         - bearerAuth: []
