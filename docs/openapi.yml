@@ -276,8 +276,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Posts'
-        '401':
-          description: fail
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /posts/{id}:
+    get: 
+      tags:
+        - post
+      summary: Get a post
+      description: Get a post by id
+      operationId: getPostById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'Id of the post'
+          required: true
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Post'
+        '404':
+          description: post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500': 
+          description: server error
           content:
             application/json:
               schema:
@@ -340,13 +377,13 @@ paths:
               properties:
                 name:
                   type: string
-                  example: "Software developement"
+                  example: 'Software developement'
                 startDate:
                   type: string
-                  example: "2024-11-01"
+                  example: '2024-11-01'
                 endDate:
                   type: string
-                  example: "2024-11-31"
+                  example: '2024-11-31'
       responses:
         '201':
           description: success
@@ -373,7 +410,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/403Error'
-                
+
     get:
       tags:
         - cohort
@@ -543,7 +580,7 @@ paths:
       description: Allows a logged-in user to create a comment.
       operationId: createComment
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       requestBody:
         description: Comment creation payload
         content:
@@ -572,7 +609,7 @@ paths:
       description: Get a list of all comments on a post.
       operationId: getAllComments
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         '200':
           description: A list of comments
@@ -602,11 +639,39 @@ components:
         data:
           properties:
             post:
+              type: object
               properties:
                 id:
                   type: integer
                 content:
                   type: string
+                  example: 'My first post!'
+                createdAt:
+                  type: string
+                  example: '2024-10-30T13:43:38.440Z'
+                updatedAt:
+                  type: string
+                  example: '2024-10-30T13:43:38.440Z'
+                author:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    cohortId:
+                      type: integer
+                    role:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    bio:
+                      type: string
+                    githubUrl:
+                      type: string
+                    profileImageUrl:
+                      type: string
 
     Cohort:
       type: object
@@ -781,35 +846,40 @@ components:
               items:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                  content:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: string
-                  updatedAt:
-                    type: string
-                    format: string
-                  author:
+                  post:
                     type: object
                     properties:
                       id:
                         type: integer
-                      cohortId:
-                        type: integer
-                      role:
+                      content:
                         type: string
-                      firstName:
+                        example: 'My first post!'
+                      createdAt:
                         type: string
-                      lastName:
+                        example: '2024-10-30T13:43:38.440Z'
+                      updatedAt:
                         type: string
-                      bio:
-                        type: string
-                      githubUrl:
-                        type: string
-                      profileImageUrl:
-                        type: string
+                        example: '2024-10-30T13:43:38.440Z'
+                      author:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          cohortId:
+                            type: integer
+                          role:
+                            type: string
+                          firstName:
+                            type: string
+                          lastName:
+                            type: string
+                          bio:
+                            type: string
+                          githubUrl:
+                            type: string
+                          profileImageUrl:
+                            type: string
 
     CreatedUser:
       type: object
@@ -887,12 +957,12 @@ components:
       properties:
         status:
           type: string
-          example: "fail"
+          example: 'fail'
         data:
           properties:
             authorization:
               type: string
-              example: "You are not authorized to perform this action"
+              example: 'You are not authorized to perform this action'
 
     Log:
       type: object
