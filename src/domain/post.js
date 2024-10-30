@@ -27,17 +27,14 @@ export default class Post {
     this.updatedAt = updatedAt
   }
 
-  // I've changed the name value at the bottom of this to match the open api's response with the user objects renamed as author.
+  // I've changed the user value at the bottom of this to author in order to match the open api's response.
   toJSON() {
-    console.log(this.user.profile)
-
     return {
       post: {
         id: this.id,
         content: this.content,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
-
         author: {
           id: this.user.id,
           cohortId: this.user.cohortId,
@@ -52,12 +49,23 @@ export default class Post {
     }
   }
 
-  /**
-   * @returns {Post}
-   *
-   */
+  // I've made both the create method and the save method depending on what is preferred.
+  async save() {
+    const data = {
+      content: this.content,
+      userId: this.userId
+    }
 
-  // I've made both the create method and the save method depending on what is prefered.
+    const createdPost = await dbClient.post.create({
+      data,
+      include: {
+        user: true
+      }
+    })
+
+    return Post.fromDb(createdPost)
+  }
+
   static async create({ content, userId }) {
     const newPost = await dbClient.post.create({
       data: {
@@ -73,22 +81,6 @@ export default class Post {
       }
     })
     return newPost
-  }
-
-  async save() {
-    const data = {
-      content: this.content,
-      userId: this.userId
-    }
-
-    const createdPost = await dbClient.post.create({
-      data,
-      include: {
-        user: true
-      }
-    })
-
-    return Post.fromDb(createdPost)
   }
 
   static async findById(id) {
