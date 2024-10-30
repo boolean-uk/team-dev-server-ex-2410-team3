@@ -10,7 +10,6 @@ import authRouter from './routes/auth.js'
 import cohortRouter from './routes/cohort.js'
 import deliveryLogRouter from './routes/deliveryLog.js'
 import User from './domain/user.js'
-// import Post from './domain/post.js'
 
 const app = express()
 app.disable('x-powered-by')
@@ -74,33 +73,7 @@ async function validateData({ firstName, lastName, email, password }) {
   }
   return false
 }
-/*
-app.post('/posts', async (req, res) => {
-  const { content } = req.body
 
-  try {
-    if (!content || content.length < 3) {
-      return res.status(400).json({
-        error: 'Content has to be more than 3 characters'
-      })
-    }
-    const newPost = await Post.create({
-      content
-    })
-    res.status(201).json({
-      status: 'success',
-      data: {
-        post: newPost
-      }
-    })
-  } catch (err) {
-    res.status(401).json({
-      status: 'fail',
-      message: err.message
-    })
-  }
-})
-*/
 app.post('/users', async (req, res) => {
   const { firstName, lastName, email, bio, githubUrl, password } = req.body
   const validation = await validateData({
