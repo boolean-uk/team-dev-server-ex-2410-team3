@@ -69,7 +69,7 @@ export const updateById = async (req, res) => {
 export const updateLoggedInUser = async (req, res) => {
   const { firstName, lastName, email, bio, githubUrl, password } = req.body
 
-  // Password validation
+  const userId = parseInt(req.params.id) // Get the user ID from the request parameters  // Password validation
   if (
     password.length < 8 ||
     !/[A-Z]/.test(password) ||
@@ -84,7 +84,11 @@ export const updateLoggedInUser = async (req, res) => {
   }
 
   try {
-    const userId = req.user.id // Ensure we have a method of getting the logged-in user's ID
+    const foundUser = await User.findById(userId)
+
+    if (!foundUser) {
+      return sendDataResponse(res, 404, { id: 'User not found' })
+    }
 
     const updatedUser = await User.update({
       where: { id: userId },
