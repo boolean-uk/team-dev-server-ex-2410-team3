@@ -13,6 +13,71 @@ tags:
   - name: log
   - name: comment
 paths:
+  /users/{id}/update:
+    put:
+      tags:
+        - user
+      summary: Update logged-in user
+      description: Updates the information of the user corressponding with the provided ID. A teacher can update any user while a student can only update themselves.
+      operationId: updateLoggedInUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'ID of user to update. '
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                bio:
+                  type: string
+                githubUrl:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
   /users:
     post:
       tags:
