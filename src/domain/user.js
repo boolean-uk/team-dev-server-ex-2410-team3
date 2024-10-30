@@ -118,6 +118,23 @@ export default class User {
     return User.fromDb(createdUser)
   }
 
+  static async update({ where, data }) {
+    // If the password is being updated, hash it
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 8)
+    }
+
+    const updatedUser = await dbClient.user.update({
+      where,
+      data,
+      include: {
+        profile: true
+      }
+    })
+
+    return User.fromDb(updatedUser)
+  }
+
   static async findByEmail(email) {
     return User._findByUnique('email', email)
   }

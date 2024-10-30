@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jasmine",
-    "test:coverage": "nyc jasmine",
+    "test:coverage": "c8 jasmine",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "db-reset": "prisma migrate reset",
@@ -14,23 +14,24 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
-  "nyc": {
+  "c8": {
     "reporter": [
       "text",
       "lcov"
     ],
-    "all": true,
+    "all": false,
     "include": [
       "src/**/*.js"
     ],
     "exclude": [
-      "**/spec/**"
+      "spec/**",
+      "node_modules/**"
     ],
-    "check-coverage": true,
-    "statements": 0,
-    "branches": 0,
-    "functions": 0,
-    "lines": 0
+    "check-coverage": false,
+    "statements": 50,
+    "branches": 50,
+    "functions": 50,
+    "lines": 50
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@boolean-uk/boolean-prettier-config": "^1.0.2",
+    "c8": "^10.1.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^16.0.3",
@@ -57,7 +59,6 @@
     "eslint-plugin-promise": "^5.1.0",
     "jasmine": "^5.4.0",
     "nodemon": "^2.0.15",
-    "nyc": "^17.1.0",
     "prettier": "^2.6.2",
     "prisma": "^3.15.2"
   },
