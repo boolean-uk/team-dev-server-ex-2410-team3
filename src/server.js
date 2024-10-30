@@ -71,7 +71,7 @@ async function validateData({ firstName, lastName, email, password }) {
         'Password must contain at least one uppercase letter, one number and one special character, and be 8 characters long'
     }
   }
-  return false
+  return { isValid: true }
 }
 
 app.post('/users', async (req, res) => {
