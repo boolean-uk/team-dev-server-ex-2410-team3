@@ -217,6 +217,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /posts/{id}:
+    get: 
+      tags:
+        - post
+      summary: Get a post
+      description: Get a post by id
+      operationId: getPostById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'Id of the post'
+          required: true
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Post'
+        '404':
+          description: post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500': 
+          description: server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /logs:
     post:
       tags:
@@ -537,11 +574,39 @@ components:
         data:
           properties:
             post:
+              type: object
               properties:
                 id:
                   type: integer
                 content:
                   type: string
+                  example: 'My first post!'
+                createdAt:
+                  type: string
+                  example: '2024-10-30T13:43:38.440Z'
+                updatedAt:
+                  type: string
+                  example: '2024-10-30T13:43:38.440Z'
+                author:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    cohortId:
+                      type: integer
+                    role:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    bio:
+                      type: string
+                    githubUrl:
+                      type: string
+                    profileImageUrl:
+                      type: string
 
     Cohort:
       type: object
