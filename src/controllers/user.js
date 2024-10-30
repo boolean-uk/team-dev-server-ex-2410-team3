@@ -65,3 +65,14 @@ export const updateById = async (req, res) => {
 
   return sendDataResponse(res, 201, { user: { cohort_id: cohortId } })
 }
+
+export const changeUserRole = async (req, res) => {
+  const { userId } = req.body
+
+  try {
+    const updatedUser = await User.updateRoleById(userId, 'TEACHER')
+    return sendDataResponse(res, 201, { user: updatedUser })
+  } catch (error) {
+    return sendMessageResponse(res, 401, 'Unable to update user role')
+  }
+}
