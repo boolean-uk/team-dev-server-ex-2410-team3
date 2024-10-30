@@ -24,3 +24,19 @@ export const getAll = async (req, res) => {
     )
   }
 }
+
+export const getById = async (req, res) => {
+  const id = parseInt(req.params.id)
+
+  try {
+    const foundPost = await Post.findById(id)
+
+    if (!foundPost) {
+      return sendDataResponse(res, 404, { id: 'Post not found' })
+    }
+
+    return sendDataResponse(res, 200, foundPost)
+  } catch (error) {
+    return sendDataResponse(res, 500, 'Unable to get post')
+  }
+}
