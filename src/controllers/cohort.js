@@ -36,7 +36,7 @@ export const getById = async (req, res) => {
     return sendMessageResponse(res, 404, 'Cohort not found')
   }
 
-  return sendDataResponse(res, 201, { cohort })
+  return sendDataResponse(res, 200, { cohort })
 }
 
 export const getAll = async (req, res) => {
