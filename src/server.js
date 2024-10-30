@@ -10,7 +10,7 @@ import authRouter from './routes/auth.js'
 import cohortRouter from './routes/cohort.js'
 import deliveryLogRouter from './routes/deliveryLog.js'
 import User from './domain/user.js'
-import Post from './domain/post.js'
+// import Post from './domain/post.js'
 
 const app = express()
 app.disable('x-powered-by')
@@ -74,7 +74,7 @@ async function validateData({ firstName, lastName, email, password }) {
   }
   return false
 }
-
+/*
 app.post('/posts', async (req, res) => {
   const { content } = req.body
 
@@ -100,7 +100,7 @@ app.post('/posts', async (req, res) => {
     })
   }
 })
-
+*/
 app.post('/users', async (req, res) => {
   const { firstName, lastName, email, bio, githubUrl, password } = req.body
   const validation = await validateData({
@@ -111,12 +111,19 @@ app.post('/users', async (req, res) => {
   })
   if (!validation.isValid) {
     return res.status(409).json({
-      status: 'fail',
+      status: 'Fail',
       message: validation.message
     })
   }
 
   try {
+    const existingUser = await User._findByUnique({ where: { email } })
+    if (existingUser) {
+      return res.status(409).json({
+        status: 'Fail',
+        message: 'Email already exists'
+      })
+    }
     const newUser = await User.create({
       firstName,
       lastName,
@@ -132,7 +139,7 @@ app.post('/users', async (req, res) => {
       }
     })
   } catch (err) {
-    res.status(400).json({
+    res.status(409).json({
       status: 'fail',
       message: err.message
     })
