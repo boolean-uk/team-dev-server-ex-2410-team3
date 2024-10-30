@@ -92,9 +92,6 @@ export const updateLoggedInUser = async (req, res) => {
     return sendDataResponse(res, 404, { id: 'Logged in user not found' })
   }
 
-  console.log('Logged in user:', loggedInUser.role)
-  console.log('User ID to update:', userId)
-
   if (loggedInUser.role === 'TEACHER') {
     // do the update
   } else if (loggedInUser.role === 'STUDENT' && loggedInId === userId) {
