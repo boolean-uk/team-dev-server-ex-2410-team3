@@ -1,4 +1,5 @@
-import { sendDataResponse } from '../utils/responses.js'
+import Post from '../domain/post.js'
+import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
 
 export const create = async (req, res) => {
   const { content } = req.body
@@ -11,18 +12,15 @@ export const create = async (req, res) => {
 }
 
 export const getAll = async (req, res) => {
-  return sendDataResponse(res, 200, {
-    posts: [
-      {
-        id: 1,
-        content: 'Hello world!',
-        author: { ...req.user }
-      },
-      {
-        id: 2,
-        content: 'Hello from the void!',
-        author: { ...req.user }
-      }
-    ]
-  })
+  try {
+    const posts = await Post.findAll()
+
+    return sendDataResponse(res, 200, { posts })
+  } catch (error) {
+    return sendMessageResponse(
+      res,
+      500,
+      'Internal server error when fetch all posts.'
+    )
+  }
 }
