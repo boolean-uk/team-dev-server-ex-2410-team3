@@ -331,11 +331,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /comments/post/{postId}:
     get:
       tags:
         - comment
-      summary: Retrieve all comments
-      description: Get a list of all comments.
+      summary: Retrieve all comments from a post
+      description: Get a list of all comments on a post.
       operationId: getAllComments
       security:
         - bearerAuth: [ ]
