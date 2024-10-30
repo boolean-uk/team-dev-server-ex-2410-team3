@@ -72,6 +72,11 @@ export async function addUserToCohort(cohortId, userId) {
         cohorts: {
           connect: { id: cohortId }
         }
+      },
+      select: {
+        id: true,
+        role: true,
+        password: false
       }
     })
 
