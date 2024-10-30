@@ -104,7 +104,8 @@ app.post('/posts', async (req, res) => {
 })
 
 app.post('/users', async (req, res) => {
-  const { firstName, lastName, email, bio, githubUrl, password } = req.body
+  const { firstName, lastName, email, biography, githubUrl, password } =
+    req.body
   const validation = await validateData({
     firstName,
     lastName,
@@ -123,7 +124,7 @@ app.post('/users', async (req, res) => {
       firstName,
       lastName,
       email,
-      bio,
+      biography,
       githubUrl,
       password
     })
