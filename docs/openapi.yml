@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Team Dev Server API
   description: |-
-  version: 1.0
+  version: '1.0'
 
 servers:
   - url: http://localhost:4000/
@@ -11,7 +11,7 @@ tags:
   - name: post
   - name: cohort
   - name: log
-
+  - name: comment
 paths:
   /users/{id}/update:
     put:
@@ -331,8 +331,24 @@ paths:
       operationId: createCohort
       security:
         - bearerAuth: []
+      requestBody:
+        description: Request body for creating a cohort
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Software developement"
+                startDate:
+                  type: string
+                  example: "2024-11-01"
+                endDate:
+                  type: string
+                  example: "2024-11-31"
       responses:
-        201:
+        '201':
           description: success
           content:
             application/json:
@@ -345,8 +361,227 @@ paths:
                     properties:
                       cohort:
                         $ref: '#/components/schemas/Cohort'
-        400:
+        '400':
           description: fail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: must be teacher role to perform this action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+                
+    get:
+      tags:
+        - cohort
+      summary: Get all cohorts
+      description: Get all cohorts
+      operationId: getCohorts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCohorts'
+
+  /cohorts/{id}:
+    delete:
+      tags:
+        - cohort
+      summary: Delete a cohort
+      description: ''
+      operationId: deleteCohort
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'The cohort id to be deleted'
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/User'
+
+        '400':
+          description: Missing id in request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: fail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: authorization fail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+
+    put:
+      tags:
+        - cohort
+      summary: Update a cohort
+      description: Update a cohort
+      operationId: updateCohort
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 'The cohort id to be updated'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Request body for adding a user to a cohort
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cohort'
+        '403':
+          description: must be teacher role to perform this action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+
+  /cohorts/addUser:
+    post:
+      tags:
+        - cohort
+      summary: Adds a user to a cohort
+      description: This can only be done by the logged in user with role TEACHER.
+      operationId: addUserToCohort
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Request body for adding a user to a cohort
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cohortId:
+                  type: integer
+                  example: 1
+                userId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Successfully added the user to cohort
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    properties:
+                      cohort:
+                        $ref: '#/components/schemas/CohortIdAndUserId'
+        '400':
+          description: cohortId or userId missing in request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: user or cohort was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: must be teacher role to perform this action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+
+  /comments:
+    post:
+      tags:
+        - comment
+      summary: Create a new comment
+      description: Allows a logged-in user to create a comment.
+      operationId: createComment
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Comment creation payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        '201':
+          description: Comment successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /comments/post/{postId}:
+    get:
+      tags:
+        - comment
+      summary: Retrieve all comments from a post
+      description: Get a list of all comments on a post.
+      operationId: getAllComments
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllComments'
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -378,12 +613,67 @@ components:
       properties:
         id:
           type: integer
+        name:
+          type: string
         createdAt:
           type: string
           format: string
         updatedAt:
           type: string
           format: string
+        startDate:
+          type: string
+          format: string
+        endDate:
+          type: string
+          format: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserNoCohorts'
+
+    CohortNoUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: string
+        updatedAt:
+          type: string
+          format: string
+        startDate:
+          type: string
+          format: string
+        endDate:
+          type: string
+          format: string
+
+    CohortIdAndUserId:
+      type: object
+      properties:
+        cohortId:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+
+    AllCohorts:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: object
+          properties:
+            cohorts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cohort'
 
     AllUsers:
       type: object
@@ -399,6 +689,30 @@ components:
                 $ref: '#/components/schemas/User'
 
     User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        role:
+          type: string
+        cohortId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        bio:
+          type: string
+        githubUrl:
+          type: string
+        cohorts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CohortNoUser'
+
+    UserNoCohorts:
       type: object
       properties:
         id:
@@ -568,6 +882,18 @@ components:
             error:
               type: string
 
+    403Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "fail"
+        data:
+          properties:
+            authorization:
+              type: string
+              example: "You are not authorized to perform this action"
+
     Log:
       type: object
       properties:
@@ -601,3 +927,63 @@ components:
                         type: integer
                       content:
                         type: string
+    CreateComment:
+      type: object
+      properties:
+        content:
+          type: string
+          description: The content of the comment
+        postId:
+          type: integer
+          description: The ID of the post to which the comment belongs
+
+    CommentResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            comment:
+              $ref: '#/components/schemas/Comment'
+
+    AllComments:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        postId:
+          type: integer
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+            firstName:
+              type: string
+            lastName:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
