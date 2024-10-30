@@ -211,8 +211,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Posts'
-        '401':
-          description: fail
+        '500':
+          description: Internal server error
           content:
             application/json:
               schema:
@@ -721,26 +721,36 @@ components:
                     properties:
                       id:
                         type: integer
-                      cohortId:
-                        type: integer
-                      role:
+                      content:
                         type: string
-                      firstName:
+                        example: 'My first post!'
+                      createdAt:
                         type: string
-                      lastName:
+                        example: '2024-10-30T13:43:38.440Z'
+                      updatedAt:
                         type: string
-                      bio:
-                        type: string
-                      githubUrl:
-                        type: string
-                      profileImageUrl:
-                        type: string
+                        example: '2024-10-30T13:43:38.440Z'
                       author:
                         type: object
                         properties:
                           id:
                             type: integer
                             example: 1
+                          cohortId:
+                            type: integer
+                          role:
+                            type: string
+                          firstName:
+                            type: string
+                          lastName:
+                            type: string
+                          bio:
+                            type: string
+                          githubUrl:
+                            type: string
+                          profileImageUrl:
+                            type: string
+
     CreatedUser:
       type: object
       properties:
