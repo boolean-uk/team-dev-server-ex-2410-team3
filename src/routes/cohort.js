@@ -20,11 +20,21 @@ router.get('/:cohortId', validateAuthentication, getById)
 
 // POST endpoints
 router.post('/', validateAuthentication, validateTeacherRole, create)
-router.post('/addUser', validateAuthentication, validateTeacherRole, addUserToCohort)
+router.post(
+  '/addUser',
+  validateAuthentication,
+  validateTeacherRole,
+  addUserToCohort
+)
 router.post('/', validateAuthentication, validateTeacherRole, create)
 
 // DELETE endpoints
-router.delete('/:cohortId', validateAuthentication, validateTeacherRole, deleteCohort)
+router.delete(
+  '/:cohortId',
+  validateAuthentication,
+  validateTeacherRole,
+  deleteCohort
+)
 
 // PUT endpoints
 router.put('/:cohortId', validateAuthentication, validateTeacherRole, update)
