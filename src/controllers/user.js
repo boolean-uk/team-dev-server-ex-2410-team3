@@ -1,5 +1,6 @@
 import User from '../domain/user.js'
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
+import dbClient from '../utils/dbClient.js'
 
 export const create = async (req, res) => {
   const userToCreate = await User.fromJson(req.body)
@@ -36,7 +37,6 @@ export const getById = async (req, res) => {
 }
 
 export const getAll = async (req, res) => {
-  // eslint-disable-next-line camelcase
   const { first_name: firstName } = req.query
 
   let foundUsers
@@ -57,17 +57,53 @@ export const getAll = async (req, res) => {
 }
 
 export const updateById = async (req, res) => {
-  const { cohort_id: cohortId } = req.body
+  const id = parseInt(req.params.id)
+  const {
+    cohort_id: cohortId,
+    firstName,
+    lastName,
+    bio,
+    username,
+    githubUsername,
+    profilePicture,
+    mobile
+  } = req.body
 
-  if (!cohortId) {
-    return sendDataResponse(res, 400, { cohort_id: 'Cohort ID is required' })
+  try {
+    const foundUser = await User.findById(id)
+    if (!foundUser) {
+      return sendDataResponse(res, 404, { id: 'User not found' })
+    }
+
+    const updatedUser = await dbClient.user.update({
+      where: { id },
+      data: {
+        cohortId,
+        profile: {
+          update: {
+            ...(firstName && { firstName }),
+            ...(lastName && { lastName }),
+            ...(bio && { bio }),
+            ...(username && { username }),
+            ...(githubUsername && { githubUsername }),
+            ...(profilePicture && { profilePicture }),
+            ...(mobile && { mobile })
+          }
+        }
+      },
+      include: { profile: true }
+    })
+
+    const updatedUserResponse = User.fromDb(updatedUser)
+
+    return sendDataResponse(res, 200, updatedUserResponse)
+  } catch (error) {
+    return sendMessageResponse(res, 500, 'Unable to update user')
   }
-
-  return sendDataResponse(res, 201, { user: { cohort_id: cohortId } })
 }
 
 export const updateLoggedInUser = async (req, res) => {
-  let { firstName, lastName, email, bio, githubUrl, password } = req.body
+  let { firstName, lastName, email, bio, githubUsername, password } = req.body
 
   if (!password) {
     password = 'fail' // this prevents the program from crashing
@@ -127,7 +163,7 @@ export const updateLoggedInUser = async (req, res) => {
             firstName,
             lastName,
             bio,
-            githubUrl
+            githubUsername
           }
         }
       }
