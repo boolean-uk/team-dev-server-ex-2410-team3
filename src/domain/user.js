@@ -2,14 +2,6 @@ import dbClient from '../utils/dbClient.js'
 import bcrypt from 'bcrypt'
 
 export default class User {
-  /**
-   * This is JSDoc - a way for us to tell other developers what types functions/methods
-   * take as inputs, what types they return, and other useful information that JS doesn't have built in
-   * @tutorial https://www.valentinog.com/blog/jsdoc
-   *
-   * @param { { id: int, cohortId: int, email: string, profile: { firstName: string, lastName: string, bio: string, githubUrl: string } } } user
-   * @returns {User}
-   */
   static fromDb(user) {
     return new User(
       user.id,
@@ -18,16 +10,18 @@ export default class User {
       user.profile?.lastName,
       user.email,
       user.profile?.bio,
-      user.profile?.githubUrl,
+      user.profile?.username,
+      user.profile?.githubUsername,
+      user.profile?.profilePicture,
+      user.profile?.mobile,
       user.password,
-      user.role
+      user.role,
+      user.specialism
     )
   }
 
   static async fromJson(json) {
-    // eslint-disable-next-line camelcase
-    const { firstName, lastName, email, biography, githubUrl, password } = json
-
+    const { firstName, lastName, email, biography, password, specialism, username, githubUsername, profilePicture, mobile } = json
     const passwordHash = await bcrypt.hash(password, 8)
 
     return new User(
@@ -37,8 +31,13 @@ export default class User {
       lastName,
       email,
       biography,
-      githubUrl,
-      passwordHash
+      username,
+      githubUsername,
+      profilePicture,
+      mobile,
+      passwordHash,
+      'STUDENT',
+      specialism
     )
   }
 
@@ -49,9 +48,13 @@ export default class User {
     lastName,
     email,
     bio,
-    githubUrl,
+    username = "",
+    githubUsername = "",
+    profilePicture = "",
+    mobile = "",
     passwordHash = null,
-    role = 'STUDENT'
+    role = 'STUDENT',
+    specialism = ""
   ) {
     this.id = id
     this.cohortId = cohortId
@@ -59,9 +62,13 @@ export default class User {
     this.lastName = lastName
     this.email = email
     this.bio = bio
-    this.githubUrl = githubUrl
+    this.username = username
+    this.githubUsername = githubUsername
+    this.profilePicture = profilePicture
+    this.mobile = mobile
     this.passwordHash = passwordHash
     this.role = role
+    this.specialism = specialism
   }
 
   toJSON() {
@@ -74,20 +81,32 @@ export default class User {
         lastName: this.lastName,
         email: this.email,
         biography: this.bio,
-        githubUrl: this.githubUrl
+        username: this.username,
+        githubUsername: this.githubUsername,
+        profilePicture: this.profilePicture,
+        mobile: this.mobile,
+        specialism: this.specialism
       }
     }
   }
 
-  /**
-   * @returns {User}
-   *  A user instance containing an ID, representing the user data created in the database
-   */
   async save() {
     const data = {
       email: this.email,
       password: this.passwordHash,
-      role: this.role
+      role: this.role,
+      specialism: this.specialism,
+      profile: {
+        create: {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          bio: this.bio,
+          username: this.username,
+          githubUsername: this.githubUsername,
+          profilePicture: this.profilePicture,
+          mobile: this.mobile
+        }
+      }
     }
 
     if (this.cohortId) {
@@ -98,21 +117,8 @@ export default class User {
       }
     }
 
-    if (this.firstName && this.lastName) {
-      data.profile = {
-        create: {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          bio: this.bio,
-          githubUrl: this.githubUrl
-        }
-      }
-    }
     const createdUser = await dbClient.user.create({
-      data,
-      include: {
-        profile: true
-      }
+      data
     })
 
     return User.fromDb(createdUser)
@@ -124,10 +130,6 @@ export default class User {
 
   static async findById(id) {
     return User._findByUnique('id', id)
-  }
-
-  static async findManyByFirstName(firstName) {
-    return User._findMany('firstName', firstName)
   }
 
   static async findAll() {
@@ -144,11 +146,7 @@ export default class User {
       }
     })
 
-    if (foundUser) {
-      return User.fromDb(foundUser)
-    }
-
-    return null
+    return foundUser ? User.fromDb(foundUser) : null
   }
 
   static async _findMany(key, value) {
@@ -167,7 +165,6 @@ export default class User {
     }
 
     const foundUsers = await dbClient.user.findMany(query)
-
     return foundUsers.map((user) => User.fromDb(user))
   }
 }

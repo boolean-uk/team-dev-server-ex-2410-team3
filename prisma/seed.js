@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcrypt'
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+
+const prisma = new PrismaClient();
 
 async function seed() {
-  const cohort = await createCohort()
+  const cohort = await createCohort();
 
   const student = await createUser(
     'student@test.com',
@@ -13,7 +14,8 @@ async function seed() {
     'Bloggs',
     'Hello, world!',
     'student1'
-  )
+  );
+
   const teacher = await createUser(
     'teacher@test.com',
     'Testpassword1!',
@@ -23,14 +25,14 @@ async function seed() {
     'Hello there!',
     'teacher1',
     'TEACHER'
-  )
+  );
 
-  const post = await createPost(student.id, 'My first post!')
-  await createPost(teacher.id, 'Hello, students')
+  const post = await createPost(student.id, 'My first post!');
+  await createPost(teacher.id, 'Hello, students');
 
-  await createComment(post.id, student.id, 'Great post!')
+  await createComment(post.id, student.id, 'Great post!');
 
-  process.exit(0)
+  process.exit(0);
 }
 
 async function createComment(postId, userId, content) {
@@ -38,32 +40,32 @@ async function createComment(postId, userId, content) {
     data: {
       postId,
       userId,
-      content
+      content,
     },
     include: {
-      user: true
-    }
-  })
+      user: true,
+    },
+  });
 
-  console.info('Comment created', comment)
+  console.info('Comment created', comment);
 
-  return comment
+  return comment;
 }
 
 async function createPost(userId, content) {
   const post = await prisma.post.create({
     data: {
       userId,
-      content
+      content,
     },
     include: {
-      user: true
-    }
-  })
+      user: true,
+    },
+  });
 
-  console.info('Post created', post)
+  console.info('Post created', post);
 
-  return post
+  return post;
 }
 
 async function createCohort() {
@@ -73,13 +75,13 @@ async function createCohort() {
       startDate: new Date('2014-06-01'),
       endDate: new Date('2014-12-01'),
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  })
+      updatedAt: new Date(),
+    },
+  });
 
-  console.info('Cohort created', cohort)
+  console.info('Cohort created', cohort);
 
-  return cohort
+  return cohort;
 }
 
 async function createUser(
@@ -89,7 +91,7 @@ async function createUser(
   firstName,
   lastName,
   bio,
-  githubUrl,
+  username, // Changed from githubUrl to username
   role = 'STUDENT'
 ) {
   const user = await prisma.user.create({
@@ -103,22 +105,25 @@ async function createUser(
           firstName,
           lastName,
           bio,
-          githubUrl
-        }
-      }
+          username, // Use username instead of githubUrl
+          githubUsername: '', // Keep this as empty default as per your requirement
+          profilePicture: '', // Keep this as empty default as per your requirement
+          mobile: '', // Keep this as empty default as per your requirement
+        },
+      },
     },
     include: {
-      profile: true
-    }
-  })
+      profile: true,
+    },
+  });
 
-  console.info(`${role} created`, user)
+  console.info(`${role} created`, user);
 
-  return user
+  return user;
 }
 
 seed().catch(async (e) => {
-  console.error(e)
-  await prisma.$disconnect()
-  process.exit(1)
-})
+  console.error(e);
+  await prisma.$disconnect();
+  process.exit(1);
+});
