@@ -77,7 +77,6 @@ paths:
                     type: string
                   message:
                     type: string
-
   /users:
     post:
       tags:
@@ -637,9 +636,6 @@ components:
         status:
           type: string
         data:
-          properties:
-            post:
-              type: object
               properties:
                 id:
                   type: integer
@@ -846,9 +842,6 @@ components:
               items:
                 type: object
                 properties:
-                  post:
-                    type: object
-                    properties:
                       id:
                         type: integer
                       content:
