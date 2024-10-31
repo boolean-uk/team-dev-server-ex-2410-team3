@@ -40,3 +40,30 @@ export const getById = async (req, res) => {
     return sendDataResponse(res, 500, 'Unable to get post')
   }
 }
+
+export const updatePost = async (req, res) => {
+  const id = parseInt(req.params.id)
+  const { content } = req.body
+
+  if (!id) {
+    return sendDataResponse(res, 400, { content: 'Must provide id' })
+  }
+
+  if (!content) {
+    return sendDataResponse(res, 400, { content: 'Must provide content' })
+  }
+
+  const checkIfPostExists = await Post.findById(id)
+  if (!checkIfPostExists) {
+    return sendDataResponse(res, 404, { id: 'Post not found' })
+  }
+
+  try {
+    const updatedPost = await Post.updatePost(id, { content })
+
+    return sendDataResponse(res, 201, updatedPost)
+  } catch (error) {
+    console.log('Error updating post: ', error)
+    return sendMessageResponse(res, 500, 'Unable to update post')
+  }
+}
