@@ -21,6 +21,7 @@ model User {
   email         String    @unique
   password      String
   role          Role      @default(STUDENT)
+  specialism    String    @default("Software Developer")
   profile       Profile?
   cohortId      Int?
   cohorts       Cohort[]
@@ -31,24 +32,27 @@ model User {
 }
 
 model Profile {
-  id          Int       @id @default(autoincrement())
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id])
-  firstName   String
-  lastName    String
-  bio         String?
-  githubUrl   String?
+  id                Int       @id @default(autoincrement())
+  userId            Int       @unique
+  user              User      @relation(fields: [userId], references: [id])
+  firstName         String    @default("")
+  lastName          String    @default("")
+  username          String    @default("")
+  githubUsername    String    @default("")
+  bio               String    @default("")
+  profilePicture    String    @default("")
+  mobile            String    @default("")
 }
 
 model Cohort {
   id           Int           @id @default(autoincrement())
   name         String
   startDate    DateTime     @default(now())
-  endDate      DateTime     @default(now()) 
+  endDate      DateTime     @default(now())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   users        User[]
-  deliveryLogs DeliveryLog[] // keep 
+  deliveryLogs DeliveryLog[] // keep
 }
 
 model Post {

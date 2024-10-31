@@ -27,7 +27,7 @@
       "spec/**",
       "node_modules/**"
     ],
-    "check-coverage": false,
+    "check-coverage": true,
     "statements": 50,
     "branches": 50,
     "functions": 50,

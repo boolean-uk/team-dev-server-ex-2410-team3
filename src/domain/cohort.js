@@ -25,7 +25,22 @@ export async function getCohortById(cohortId) {
     const cohort = await dbClient.cohort.findUnique({
       where: { id: cohortId },
       include: {
-        users: { select: { id: true, role: true } }
+        users: {
+          select: {
+            id: true,
+            role: true,
+            email: true,
+            specialism: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                bio: true,
+                githubUsername: true
+              }
+            }
+          }
+        }
       }
     })
     return cohort
@@ -39,7 +54,22 @@ export async function getAllCohorts() {
   try {
     const cohorts = await dbClient.cohort.findMany({
       include: {
-        users: { select: { id: true, role: true } }
+        users: {
+          select: {
+            id: true,
+            role: true,
+            email: true,
+            specialism: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                bio: true,
+                githubUsername: true
+              }
+            }
+          }
+        }
       }
     })
     return cohorts
@@ -76,7 +106,16 @@ export async function addUserToCohort(cohortId, userId) {
       select: {
         id: true,
         role: true,
-        password: false
+        email: true,
+        specialism: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+            bio: true,
+            githubUsername: true
+          }
+        }
       }
     })
 
@@ -90,7 +129,25 @@ export async function addUserToCohort(cohortId, userId) {
 export async function deleteCohort(cohortId) {
   try {
     const cohort = await dbClient.cohort.delete({
-      where: { id: cohortId }
+      where: { id: cohortId },
+      include: {
+        users: {
+          select: {
+            id: true,
+            role: true,
+            email: true,
+            specialism: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                bio: true,
+                githubUsername: true
+              }
+            }
+          }
+        }
+      }
     })
     return cohort
   } catch (error) {
@@ -110,6 +167,24 @@ export async function updateCohort(cohortId, { name, startDate, endDate }) {
         startDate,
         endDate,
         updatedAt: new Date()
+      },
+      include: {
+        users: {
+          select: {
+            id: true,
+            role: true,
+            email: true,
+            specialism: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                bio: true,
+                githubUsername: true
+              }
+            }
+          }
+        }
       }
     })
     return cohort

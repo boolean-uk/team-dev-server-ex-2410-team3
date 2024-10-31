@@ -14,10 +14,14 @@ describe('User Domain Model', () => {
         firstName: 'Test',
         lastName: 'User',
         bio: 'Bio',
-        githubUrl: 'https://github.com/testuser'
+        username: 'testuser',
+        githubUsername: 'githubuser',
+        profilePicture: 'profilePic.jpg',
+        mobile: '1234567890'
       },
       password: 'hashedpassword',
-      role: 'STUDENT'
+      role: 'STUDENT',
+      specialism: 'Software Developer'
     }
 
     spyOn(dbClient.user, 'create').and.callFake((data) =>
@@ -53,7 +57,7 @@ describe('User Domain Model', () => {
         lastName: 'User',
         email: 'test@example.com',
         biography: 'Bio',
-        githubUrl: 'https://github.com/testuser',
+        githubUsername: 'githubuser',
         password: 'password123'
       }
 
@@ -74,7 +78,7 @@ describe('User Domain Model', () => {
         'User',
         'test@example.com',
         'Bio',
-        'https://github.com/testuser',
+        'githubuser',
         'hashedpassword',
         'STUDENT'
       )
@@ -93,7 +97,7 @@ describe('User Domain Model', () => {
         'User',
         'test@example.com',
         'Bio',
-        'https://github.com/testuser',
+        'githubuser',
         'hashedpassword'
       )
 
@@ -104,15 +108,19 @@ describe('User Domain Model', () => {
   describe('User.toJSON', () => {
     it('should return a JSON representation of the User', () => {
       const user = new User(
-        1,
-        1,
-        'Test',
-        'User',
-        'test@example.com',
-        'Bio',
-        'https://github.com/testuser',
-        'hashedpassword',
-        'STUDENT'
+        1, // id
+        1, // cohortId
+        'Test', // firstName
+        'User', // lastName
+        'test@example.com', // email
+        'Bio', // bio
+        'testuser', // username
+        'githubuser', // githubUsername
+        'profilePic.jpg', // profilePicture
+        '1234567890', // mobile
+        'hashedpassword', // passwordHash
+        'STUDENT', // role
+        'Software Developer' // specialism
       )
 
       const json = user.toJSON()
@@ -125,7 +133,11 @@ describe('User Domain Model', () => {
           lastName: 'User',
           email: 'test@example.com',
           biography: 'Bio',
-          githubUrl: 'https://github.com/testuser'
+          username: 'testuser',
+          githubUsername: 'githubuser',
+          profilePicture: 'profilePic.jpg',
+          mobile: '1234567890',
+          specialism: 'Software Developer'
         }
       })
     })
@@ -134,15 +146,19 @@ describe('User Domain Model', () => {
   describe('User.save', () => {
     it('should save a new user to the database', async () => {
       const user = new User(
-        null,
-        1,
-        'Test',
-        'User',
-        'test@example.com',
-        'Bio',
-        'https://github.com/testuser',
-        'hashedpassword',
-        'STUDENT'
+        null, // id
+        1, // cohortId
+        null, // firstName
+        null, // lastName
+        'test@example.com', // email
+        'Bio', // bio
+        'testuser', // username
+        'githubuser', // githubUsername
+        'profilePic.jpg', // profilePicture
+        '1234567890', // mobile
+        'hashedpassword', // passwordHash
+        'STUDENT', // role
+        'Software Developer' // specialism
       )
 
       const savedUser = await user.save()
@@ -154,15 +170,19 @@ describe('User Domain Model', () => {
 
     it('should handle saving without cohortId', async () => {
       const user = new User(
-        null,
-        null,
-        'Test',
-        'User',
-        'test@example.com',
-        'Bio',
-        'https://github.com/testuser',
-        'hashedpassword',
-        'STUDENT'
+        null, // id
+        null, // cohortId
+        'Test', // firstName
+        'User', // lastName
+        'test@example.com', // email
+        'Bio', // bio
+        'testuser', // username
+        'githubuser', // githubUsername
+        'profilePic.jpg', // profilePicture
+        '1234567890', // mobile
+        'hashedpassword', // passwordHash
+        'STUDENT', // role
+        'Software Developer' // specialism
       )
 
       await user.save()
@@ -172,17 +192,18 @@ describe('User Domain Model', () => {
           email: 'test@example.com',
           password: 'hashedpassword',
           role: 'STUDENT',
+          specialism: 'Software Developer',
           profile: {
             create: {
               firstName: 'Test',
               lastName: 'User',
               bio: 'Bio',
-              githubUrl: 'https://github.com/testuser'
+              username: 'testuser',
+              githubUsername: 'githubuser',
+              profilePicture: 'profilePic.jpg',
+              mobile: '1234567890'
             }
           }
-        },
-        include: {
-          profile: true
         }
       }
 
@@ -191,15 +212,19 @@ describe('User Domain Model', () => {
 
     it('should handle saving without firstName and lastName', async () => {
       const user = new User(
-        null,
-        1,
-        null,
-        null,
-        'test@example.com',
-        'Bio',
-        'https://github.com/testuser',
-        'hashedpassword',
-        'STUDENT'
+        null, // id
+        1, // cohortId
+        null, // firstName
+        null, // lastName
+        'test@example.com', // email
+        'Bio', // bio
+        'testuser', // username
+        'githubuser', // githubUsername
+        'profilePic.jpg', // profilePicture
+        '1234567890', // mobile
+        'hashedpassword', // passwordHash
+        'STUDENT', // role
+        'Software Developer' // specialism
       )
 
       await user.save()
@@ -209,14 +234,23 @@ describe('User Domain Model', () => {
           email: 'test@example.com',
           password: 'hashedpassword',
           role: 'STUDENT',
+          specialism: 'Software Developer',
+          profile: {
+            create: {
+              firstName: null,
+              lastName: null,
+              bio: 'Bio',
+              username: 'testuser',
+              githubUsername: 'githubuser',
+              profilePicture: 'profilePic.jpg',
+              mobile: '1234567890'
+            }
+          },
           cohort: {
             connectOrCreate: {
               id: 1
             }
           }
-        },
-        include: {
-          profile: true
         }
       }
 
@@ -266,14 +300,14 @@ describe('User Domain Model', () => {
 
       expect(dbClient.user.findMany).toHaveBeenCalledWith({
         where: {
-          profile: {
-            firstName: 'Test'
+          firstName: {
+            contains: 'Test',
+            mode: 'insensitive'
           }
-        },
-        include: { profile: true }
+        }
       })
       expect(users.length).toBeGreaterThan(0)
-      expect(users[0]).toBeInstanceOf(User)
+      expect(users[0]).toEqual(mockUserData)
     })
   })
 

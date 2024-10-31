@@ -44,7 +44,7 @@ paths:
                   type: string
                 bio:
                   type: string
-                githubUrl:
+                githubUsername:
                   type: string
                 password:
                   type: string
@@ -77,7 +77,6 @@ paths:
                     type: string
                   message:
                     type: string
-
   /users:
     post:
       tags:
@@ -163,17 +162,17 @@ paths:
       description: ''
       operationId: getUserByID
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
-          description: 'The name that needs to be fetched. Use user1 for testing. '
+          description: 'User ID to fetch.'
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
@@ -182,16 +181,18 @@ paths:
                   status:
                     type: string
                   data:
-                    $ref: '#/components/schemas/User'
-
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
         '400':
-          description: fail
+          description: Invalid request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: fail
+          description: User not found
           content:
             application/json:
               schema:
@@ -299,7 +300,6 @@ paths:
           required: true
           schema:
             type: string
-        
       responses:
         '200':
           description: Successful operation
@@ -319,6 +319,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put: 
+      tags:
+        - post
+      summary: Update a post
+      description: Update a post
+      operationId: updatePostById
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Created post object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "My First Post!"
+      parameters:
+        - name: id
+          in: path
+          description: 'Id of the post'
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Post'
+        '400':
+          description: id not found in parameter or content not found in request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500': 
+          description: server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /logs:
     post:
       tags:
@@ -637,9 +688,6 @@ components:
         status:
           type: string
         data:
-          properties:
-            post:
-              type: object
               properties:
                 id:
                   type: integer
@@ -668,7 +716,7 @@ components:
                       type: string
                     bio:
                       type: string
-                    githubUrl:
+                    githubUsername:
                       type: string
                     profileImageUrl:
                       type: string
@@ -770,45 +818,49 @@ components:
           type: string
         bio:
           type: string
-        githubUrl:
+        specialism:
           type: string
-        cohorts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CohortNoUser'
+        username:
+          type: string
+        githubUsername:
+          type: string
+        profilePicture:
+          type: string
+        mobile:
+          type: string
 
     UserNoCohorts:
       type: object
       properties:
         id:
           type: integer
-        email:
-          type: string
-        role:
-          type: string
-        cohortId:
-          type: integer
-        firstName:
-          type: string
-        lastName:
-          type: string
-        bio:
-          type: string
-        githubUrl:
-          type: string
+          email:
+            type: string
+          role:
+            type: string
+          cohortId:
+            type: integer
+          firstName:
+            type: string
+          lastName:
+            type: string
+          bio:
+            type: string
+          specialism:
+            type: string
+          username:
+            type: string
+          githubUsername:
+            type: string
+          profilePicture:
+            type: string
+          mobile:
+            type: string
 
     CreateUser:
       type: object
       properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
         email:
-          type: string
-        bio:
-          type: string
-        githubUrl:
           type: string
         password:
           type: string
@@ -816,21 +868,19 @@ components:
     UpdateUser:
       type: object
       properties:
-        email:
-          type: string
-        password:
-          type: string
-        cohortId:
-          type: integer
-        role:
-          type: string
         firstName:
           type: string
         lastName:
           type: string
         bio:
           type: string
-        githubUrl:
+        username:
+          type: string
+        githubUsername:
+          type: string
+        profilePicture:
+          type: string
+        mobile:
           type: string
 
     Posts:
@@ -846,9 +896,6 @@ components:
               items:
                 type: object
                 properties:
-                  post:
-                    type: object
-                    properties:
                       id:
                         type: integer
                       content:
@@ -876,7 +923,7 @@ components:
                             type: string
                           bio:
                             type: string
-                          githubUrl:
+                          githubUsername:
                             type: string
                           profileImageUrl:
                             type: string
@@ -905,7 +952,13 @@ components:
                   type: string
                 bio:
                   type: string
-                githubUrl:
+                username:
+                  type: string
+                githubUsername:
+                  type: string
+                profilePicture:
+                  type: string
+                mobile:
                   type: string
     login:
       type: object
@@ -925,23 +978,7 @@ components:
             token:
               type: string
             user:
-              properties:
-                id:
-                  type: integer
-                email:
-                  type: string
-                cohortId:
-                  type: integer
-                role:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                bio:
-                  type: string
-                githubUrl:
-                  type: string
+              $ref: '#/components/schemas/User'
     Error:
       type: object
       properties:

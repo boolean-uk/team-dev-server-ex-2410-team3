@@ -91,4 +91,13 @@ app.post('/users', async (req, res) => {
   }
 })
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server error:', err)
+  res.status(500).json({
+    status: 'fail',
+    message: 'Internal Server Error'
+  })
+})
+
 export default app
