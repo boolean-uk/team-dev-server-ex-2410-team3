@@ -47,6 +47,27 @@ export default class Post {
     }
   }
 
+  static async updatePost(id, { content }) {
+    const updatedPost = await dbClient.post.update({
+      where: {
+        id
+      },
+      data: {
+        content,
+        updatedAt: new Date()
+      },
+      include: {
+        user: {
+          include: {
+            profile: true
+          }
+        }
+      }
+    })
+    console.log('inside domain: ' + updatedPost)
+    return updatedPost
+  }
+
   // I've made both the create method and the save method depending on what is preferred.
   async save() {
     const data = {
