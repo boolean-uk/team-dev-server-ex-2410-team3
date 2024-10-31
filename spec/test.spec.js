@@ -4,7 +4,7 @@
 //
 //  Where you can find:
 // 1) user.spec.js holds tests directly testing the functionality of the code in /src/domain/user.js
-// 2) This is text in the Test.js (to be replaced)
+// 2) post.spec.js holds tests directly testing the functionality of the code in /src/domain/post.js
 // 3) (to be replaced)
 // 4) (to be replaced)
 // 5) (to be replaced)
