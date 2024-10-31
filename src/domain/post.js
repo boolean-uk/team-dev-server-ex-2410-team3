@@ -30,21 +30,19 @@ export default class Post {
   // I've changed the user value at the bottom of this to author in order to match the open api's response.
   toJSON() {
     return {
-      post: {
-        id: this.id,
-        content: this.content,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
-        author: {
-          id: this.user.id,
-          cohortId: this.user.cohortId,
-          role: this.user.role,
-          firstname: this.user.profile?.firstName,
-          lastName: this.user.profile?.lastName,
-          bio: this.user.profile?.bio,
-          githubUrl: this.user.profile?.githubUrl,
-          profileImageUrl: this.user.profile?.profileImageUrl
-        }
+      id: this.id,
+      content: this.content,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      author: {
+        id: this.user.id,
+        cohortId: this.user.cohortId,
+        role: this.user.role,
+        firstName: this.user.profile?.firstName,
+        lastName: this.user.profile?.lastName,
+        bio: this.user.profile?.bio,
+        githubUrl: this.user.profile?.githubUrl,
+        profileImageUrl: this.user.profile?.profileImageUrl
       }
     }
   }
