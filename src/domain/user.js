@@ -7,7 +7,7 @@ export default class User {
    * take as inputs, what types they return, and other useful information that JS doesn't have built in
    * @tutorial https://www.valentinog.com/blog/jsdoc
    *
-   * @param { { id: int, cohortId: int, email: string, profile: { firstName: string, lastName: string, bio: string, githubUrl: , specialism: string } } } user
+   * @param { { id: int, cohortId: int, email: string, profile: { firstName: string, lastName: string, bio: string, githubUsername: , specialism: string } } } user
    * @returns {User}
    */
   static fromDb(user) {
@@ -18,7 +18,7 @@ export default class User {
       user.profile?.lastName,
       user.email,
       user.profile?.bio,
-      user.profile?.githubUrl,
+      user.profile?.githubUsername,
       user.password,
       user.role,
       user.profile?.specialism
@@ -182,13 +182,29 @@ export default class User {
     firstName,
     lastName,
     email,
+    password,
     bio,
     githubUrl,
-    password,
     specialism
   }) {
     const newUser = await dbClient.user.create({
-      data: { firstName, lastName, email, bio, githubUrl, password, specialism }
+      data: {
+        email,
+        password,
+        specialism,
+        cohortId: 1,
+        profile: {
+          create: {
+            firstName,
+            lastName,
+            bio,
+            githubUrl
+          }
+        }
+      },
+      include: {
+        profile: true
+      }
     })
     return newUser
   }

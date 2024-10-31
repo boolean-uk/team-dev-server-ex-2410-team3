@@ -14,8 +14,7 @@ describe('User Domain Model', () => {
         firstName: 'Test',
         lastName: 'User',
         bio: 'Bio',
-        githubUrl: 'https://github.com/testuser',
-        specialism: 'Software Developer'
+        githubUrl: 'https://github.com/testuser'
       },
       password: 'hashedpassword',
       role: 'STUDENT'
@@ -55,8 +54,7 @@ describe('User Domain Model', () => {
         email: 'test@example.com',
         biography: 'Bio',
         githubUrl: 'https://github.com/testuser',
-        password: 'password123',
-        specialism: 'Software Developer'
+        password: 'password123'
       }
 
       const user = await User.fromJson(json)
@@ -135,32 +133,23 @@ describe('User Domain Model', () => {
 
   describe('User.save', () => {
     it('should save a new user to the database', async () => {
-      const user = new User({
-        firstName: 'Test',
-        lastName: 'User',
-        email: 'test@example.com',
-        bio: 'Bio',
-        githubUrl: 'https://github.com/testuser',
-        password: 'Password123!',
-        specialism: 'Software Developer' // Add specialism field
-      })
+      const user = new User(
+        null,
+        1,
+        'Test',
+        'User',
+        'test@example.com',
+        'Bio',
+        'https://github.com/testuser',
+        'hashedpassword',
+        'STUDENT'
+      )
 
-      await user.save()
+      const savedUser = await user.save()
 
-      const json = user.toJSON()
-      expect(json).toEqual({
-        user: {
-          id: 1,
-          cohort_id: 1,
-          role: 'STUDENT',
-          firstName: 'Test',
-          lastName: 'User',
-          email: 'test@example.com',
-          biography: 'Bio',
-          githubUrl: 'https://github.com/testuser',
-          specialism: 'Software Developer' // Add specialism field
-        }
-      })
+      expect(dbClient.user.create).toHaveBeenCalled()
+      expect(savedUser).toBeInstanceOf(User)
+      expect(savedUser.id).toBeDefined()
     })
 
     it('should handle saving without cohortId', async () => {

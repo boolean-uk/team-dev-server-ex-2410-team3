@@ -1,76 +1,52 @@
 import User from '../domain/user.js'
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
 
-function validatePassword(password) {
-  const passwordPattern =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  return passwordPattern.test(password)
-}
-
-async function validateData({ firstName, lastName, email, password }) {
-  if (!firstName || firstName.length <= 3) {
-    return {
-      isValid: false,
-      message: 'Firstname has to be more than 3 characters'
-    }
-  }
-  if (!lastName || lastName.length <= 3) {
-    return {
-      isValid: false,
-      message: 'Lastname has to be more than 3 characters'
-    }
-  }
-  if (!validatePassword(password)) {
-    return {
-      isValid: false,
-      message:
-        'Password must contain at least one uppercase letter, one number, one special character, and be 8 characters long'
-    }
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!email || !emailRegex.test(email)) {
-    return { isValid: false, message: 'Email is not valid' }
-  }
-
-  return { isValid: true }
-}
-
 export const create = async (req, res) => {
-  const { firstName, lastName, email, password, bio, githubUrl } = req.body
-
-  // Validate input data
-  const validation = await validateData({
-    firstName,
-    lastName,
-    email,
-    password
-  })
-  if (!validation.isValid) {
-    return res.status(400).json({ message: validation.message })
-  }
+  const userToCreate = await User.fromJson(req.body)
 
   try {
-    const existingUser = await User.findByEmail(email)
-    console.log('existingUser:', existingUser)
+    const existingUser = await User.findByEmail(userToCreate.email)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Email validation
+
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already in use' })
+      return sendDataResponse(res, 400, { email: 'Email already in use' })
     }
 
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      bio,
-      githubUrl,
-      specialism: 'Software Developer'
-    })
+    if (
+      userToCreate.firstName.length <= 3 ||
+      userToCreate.lastName.length <= 3
+    ) {
+      return sendDataResponse(res, 400, {
+        name: 'First and last name must be at least 3 characters long'
+      })
+    }
 
-    return res.status(201).json({ status: 'success', data: { user: newUser } })
+    if (!emailRegex.test(userToCreate.email)) {
+      return sendDataResponse(res, 400, { email: 'Invalid email address' })
+    }
+
+    if (!userToCreate.password) {
+      userToCreate.password = 'fail' // this prevents the program from crashing
+    }
+
+    if (
+      req.body.password.length < 8 ||
+      !/[A-Z]/.test(req.body.password) ||
+      !/[!@#$%^&*(),.?":{}|<>]/.test(req.body.password) ||
+      !/\d/.test(req.body.password)
+    ) {
+      return sendDataResponse(res, 401, {
+        status: 'fail',
+        message:
+          'The password should be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'
+      })
+    }
+
+    const createdUser = await userToCreate.save()
+
+    return sendDataResponse(res, 201, createdUser)
   } catch (error) {
-    console.error('Error creating new user:', error)
-    return res.status(500).json({ message: 'Unable to create new user' })
+    return sendMessageResponse(res, 500, 'Unable to create new user')
   }
 }
 
