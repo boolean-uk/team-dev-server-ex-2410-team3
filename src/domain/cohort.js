@@ -30,6 +30,7 @@ export async function getCohortById(cohortId) {
             id: true,
             role: true,
             email: true,
+            specialism: true,
             profile: {
               select: {
                 firstName: true,
@@ -58,6 +59,7 @@ export async function getAllCohorts() {
             id: true,
             role: true,
             email: true,
+            specialism: true,
             profile: {
               select: {
                 firstName: true,
@@ -105,6 +107,7 @@ export async function addUserToCohort(cohortId, userId) {
         id: true,
         role: true,
         email: true,
+        specialism: true,
         profile: {
           select: {
             firstName: true,
@@ -133,6 +136,7 @@ export async function deleteCohort(cohortId) {
             id: true,
             role: true,
             email: true,
+            specialism: true,
             profile: {
               select: {
                 firstName: true,
@@ -170,6 +174,7 @@ export async function updateCohort(cohortId, { name, startDate, endDate }) {
             id: true,
             role: true,
             email: true,
+            specialism: true,
             profile: {
               select: {
                 firstName: true,
