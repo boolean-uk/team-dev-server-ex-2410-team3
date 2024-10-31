@@ -30,6 +30,8 @@ async function seed() {
 
   await createComment(post.id, student.id, 'Great post!')
 
+  await addUsersToCohort(cohort.id, student.id)
+
   process.exit(0)
 }
 
@@ -80,6 +82,34 @@ async function createCohort() {
   console.info('Cohort created', cohort)
 
   return cohort
+}
+
+async function addUsersToCohort(cohortId, userId) {
+  const cohort = await prisma.cohort.update({
+    where: { id: cohortId },
+    data: {
+      users: {
+        connect: { id: userId }
+      }
+    }
+  })
+
+  // Adding cohort to user
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      cohorts: {
+        connect: { id: cohortId }
+      }
+    }
+  })
+
+  console.log('-----')
+  console.log('Added user: ', user)
+  console.log('To cohort: ', cohort)
+  console.log('-----')
+
+  return { cohort, user }
 }
 
 async function createUser(
