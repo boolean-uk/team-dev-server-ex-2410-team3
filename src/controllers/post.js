@@ -44,6 +44,7 @@ export const getById = async (req, res) => {
 export const updatePost = async (req, res) => {
   const id = parseInt(req.params.id)
   const { content } = req.body
+  const { user } = req // Logged in user, which has been added to the request object by the middleware form JWT
 
   if (!id) {
     return sendDataResponse(res, 400, { content: 'Must provide id' })
@@ -56,6 +57,12 @@ export const updatePost = async (req, res) => {
   const checkIfPostExists = await Post.findById(id)
   if (!checkIfPostExists) {
     return sendDataResponse(res, 404, { id: 'Post not found' })
+  }
+
+  if (user.id !== checkIfPostExists.userId) {
+    return sendDataResponse(res, 403, {
+      message: 'You are only allowed to update your own posts'
+    })
   }
 
   try {
