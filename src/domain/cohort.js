@@ -35,7 +35,7 @@ export async function getCohortById(cohortId) {
                 firstName: true,
                 lastName: true,
                 bio: true,
-                githubUrl: true
+                githubUsername: true
               }
             }
           }
@@ -63,7 +63,7 @@ export async function getAllCohorts() {
                 firstName: true,
                 lastName: true,
                 bio: true,
-                githubUrl: true
+                githubUsername: true
               }
             }
           }
@@ -110,7 +110,7 @@ export async function addUserToCohort(cohortId, userId) {
             firstName: true,
             lastName: true,
             bio: true,
-            githubUrl: true
+            githubUsername: true
           }
         }
       }
@@ -138,7 +138,7 @@ export async function deleteCohort(cohortId) {
                 firstName: true,
                 lastName: true,
                 bio: true,
-                githubUrl: true
+                githubUsername: true
               }
             }
           }
@@ -175,7 +175,7 @@ export async function updateCohort(cohortId, { name, startDate, endDate }) {
                 firstName: true,
                 lastName: true,
                 bio: true,
-                githubUrl: true
+                githubUsername: true
               }
             }
           }

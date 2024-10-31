@@ -14,7 +14,7 @@ describe('User Domain Model', () => {
         firstName: 'Test',
         lastName: 'User',
         bio: 'Bio',
-        githubUrl: 'https://github.com/testuser'
+        githubUsername: 'https://github.com/testuser'
       },
       password: 'hashedpassword',
       role: 'STUDENT'
@@ -53,7 +53,7 @@ describe('User Domain Model', () => {
         lastName: 'User',
         email: 'test@example.com',
         biography: 'Bio',
-        githubUrl: 'https://github.com/testuser',
+        githubUsername: 'https://github.com/testuser',
         password: 'password123'
       }
 
@@ -125,7 +125,7 @@ describe('User Domain Model', () => {
           lastName: 'User',
           email: 'test@example.com',
           biography: 'Bio',
-          githubUrl: 'https://github.com/testuser'
+          githubUsername: 'https://github.com/testuser'
         }
       })
     })
@@ -177,7 +177,7 @@ describe('User Domain Model', () => {
               firstName: 'Test',
               lastName: 'User',
               bio: 'Bio',
-              githubUrl: 'https://github.com/testuser'
+              githubUsername: 'https://github.com/testuser'
             }
           }
         },
