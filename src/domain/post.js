@@ -58,8 +58,18 @@ export default class Post {
       },
       include: {
         user: {
-          include: {
-            profile: true
+          select: {
+            id: true,
+            role: true,
+            email: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                bio: true,
+                githubUrl: true
+              }
+            }
           }
         }
       }
