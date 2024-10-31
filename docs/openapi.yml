@@ -298,7 +298,6 @@ paths:
           required: true
           schema:
             type: string
-        
       responses:
         '200':
           description: Successful operation
@@ -318,6 +317,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put: 
+      tags:
+        - post
+      summary: Update a post
+      description: Update a post
+      operationId: updatePostById
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Created post object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "My First Post!"
+      parameters:
+        - name: id
+          in: path
+          description: 'Id of the post'
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Post'
+        '400':
+          description: id not found in parameter or content not found in request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500': 
+          description: server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /logs:
     post:
       tags:
