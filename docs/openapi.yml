@@ -77,7 +77,6 @@ paths:
                     type: string
                   message:
                     type: string
-
   /users:
     post:
       tags:
