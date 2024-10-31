@@ -103,24 +103,35 @@ export const updateById = async (req, res) => {
 }
 
 export const updateLoggedInUser = async (req, res) => {
-  let { firstName, lastName, email, bio, githubUsername, password } = req.body
+  let {
+    cohort_id: cohortId,
+    firstName,
+    lastName,
+    bio,
+    username,
+    githubUsername,
+    profilePicture,
+    mobile
+  } = req.body
 
-  if (!password) {
-    password = 'fail' // this prevents the program from crashing
-  }
   const userId = parseInt(req.params.id) // Get the user ID from the request parameters  // Password validation
-  if (
-    password.length < 8 ||
-    !/[A-Z]/.test(password) ||
-    !/[!@#$%^&*(),.?":{}|<>]/.test(password) ||
-    !/\d/.test(password)
-  ) {
-    return sendDataResponse(res, 401, {
-      status: 'fail',
-      message:
-        'The password should be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'
-    })
-  }
+
+  // OLD CODE THAT FRONTEND DIDN'T WANT TO USE APPERENTLY
+  // if (!password) {
+  //   password = 'fail' // this prevents the program from crashing
+  // }
+  // if (
+  //   password.length < 8 ||
+  //   !/[A-Z]/.test(password) ||
+  //   !/[!@#$%^&*(),.?":{}|<>]/.test(password) ||
+  //   !/\d/.test(password)
+  // ) {
+  //   return sendDataResponse(res, 401, {
+  //     status: 'fail',
+  //     message:
+  //       'The password should be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'
+  //   })
+  // }
 
   const loggedInId = req.user.id //  the logged-in user's ID
   const loggedInUser = await User.findById(loggedInId)
@@ -145,28 +156,33 @@ export const updateLoggedInUser = async (req, res) => {
       return sendDataResponse(res, 404, { id: 'User not found' })
     }
 
-    if (email === '') {
-      email = foundUser.email
-    } else if (firstName === '') {
+    if (firstName === '') {
       firstName = foundUser.firstName
-    } else if (lastName === '') {
+    }
+    if (lastName === '') {
       lastName = foundUser.lastName
+    }
+    if (bio === null) {
+      bio = ''
     }
 
     const updatedUser = await User.update({
       where: { id: userId },
       data: {
-        email,
-        password,
+        cohortId,
         profile: {
           update: {
-            firstName,
-            lastName,
-            bio,
-            githubUsername
+            ...(firstName && { firstName }),
+            ...(lastName && { lastName }),
+            ...(bio && { bio }),
+            ...(username && { username }),
+            ...(githubUsername && { githubUsername }),
+            ...(profilePicture && { profilePicture }),
+            ...(mobile && { mobile })
           }
         }
-      }
+      },
+      include: { profile: true }
     })
 
     return sendDataResponse(res, 201, { user: updatedUser })
