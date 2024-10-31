@@ -66,8 +66,7 @@ export const updateById = async (req, res) => {
     username,
     githubUsername,
     profilePicture,
-    mobile,
-    specialism
+    mobile
   } = req.body
 
   try {
@@ -80,7 +79,6 @@ export const updateById = async (req, res) => {
       where: { id },
       data: {
         cohortId,
-        ...(specialism && { specialism }),
         profile: {
           update: {
             ...(firstName && { firstName }),

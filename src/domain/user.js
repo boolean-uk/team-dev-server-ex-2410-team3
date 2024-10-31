@@ -44,17 +44,17 @@ export default class User {
   constructor(
     id,
     cohortId,
-    firstName,
-    lastName,
+    firstName = "",
+    lastName = "",
     email,
-    bio,
+    bio = "",
     username = "",
     githubUsername = "",
     profilePicture = "",
     mobile = "",
     passwordHash = null,
     role = 'STUDENT',
-    specialism = ""
+    specialism = 'Software Developer'
   ) {
     this.id = id
     this.cohortId = cohortId

@@ -21,7 +21,7 @@ model User {
   email         String    @unique
   password      String
   role          Role      @default(STUDENT)
-  specialism    String    @default("")
+  specialism    String    @default("Software Developer")
   profile       Profile?
   cohortId      Int?
   cohorts       Cohort[]
