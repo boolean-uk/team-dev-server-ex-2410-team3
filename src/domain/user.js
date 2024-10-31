@@ -7,7 +7,7 @@ export default class User {
    * take as inputs, what types they return, and other useful information that JS doesn't have built in
    * @tutorial https://www.valentinog.com/blog/jsdoc
    *
-   * @param { { id: int, cohortId: int, email: string, profile: { firstName: string, lastName: string, bio: string, githubUrl: string } } } user
+   * @param { { id: int, cohortId: int, email: string, profile: { firstName: string, lastName: string, bio: string, githubUrl: , specialism: string } } } user
    * @returns {User}
    */
   static fromDb(user) {
@@ -20,13 +20,15 @@ export default class User {
       user.profile?.bio,
       user.profile?.githubUrl,
       user.password,
-      user.role
+      user.role,
+      user.profile?.specialism
     )
   }
 
   static async fromJson(json) {
     // eslint-disable-next-line camelcase
-    const { firstName, lastName, email, bio, githubUrl, password } = json
+    const { firstName, lastName, email, bio, githubUrl, password, specialism } =
+      json
 
     const passwordHash = await bcrypt.hash(password, 8)
 
@@ -38,7 +40,8 @@ export default class User {
       email,
       bio,
       githubUrl,
-      passwordHash
+      passwordHash,
+      specialism
     )
   }
 
@@ -50,6 +53,7 @@ export default class User {
     email,
     bio,
     githubUrl,
+    specialism,
     passwordHash = null,
     role = 'STUDENT'
   ) {
@@ -62,6 +66,7 @@ export default class User {
     this.githubUrl = githubUrl
     this.passwordHash = passwordHash
     this.role = role
+    this.specialism = specialism
   }
 
   toJSON() {
@@ -74,7 +79,8 @@ export default class User {
         lastName: this.lastName,
         email: this.email,
         bio: this.bio,
-        githubUrl: this.githubUrl
+        githubUrl: this.githubUrl,
+        specialism: this.specialism
       }
     }
   }
@@ -104,7 +110,8 @@ export default class User {
           firstName: this.firstName,
           lastName: this.lastName,
           bio: this.bio,
-          githubUrl: this.githubUrl
+          githubUrl: this.githubUrl,
+          specialism: this.specialism
         }
       }
     }
@@ -116,23 +123,6 @@ export default class User {
     })
 
     return User.fromDb(createdUser)
-  }
-
-  static async update({ where, data }) {
-    // If the password is being updated, hash it
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, 8)
-    }
-
-    const updatedUser = await dbClient.user.update({
-      where,
-      data,
-      include: {
-        profile: true
-      }
-    })
-
-    return User.fromDb(updatedUser)
   }
 
   static async findByEmail(email) {
@@ -186,5 +176,25 @@ export default class User {
     const foundUsers = await dbClient.user.findMany(query)
 
     return foundUsers.map((user) => User.fromDb(user))
+  }
+
+  static async create({
+    firstName,
+    lastName,
+    email,
+    bio,
+    githubUrl,
+    password,
+    specialism
+  }) {
+    const newUser = await dbClient.user.create({
+      data: { firstName, lastName, email, bio, githubUrl, password, specialism }
+    })
+    return newUser
+  }
+
+  static async findUnique({ where }) {
+    const user = await dbClient.user.findUnique({ where })
+    return user
   }
 }

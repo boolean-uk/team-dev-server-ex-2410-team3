@@ -1,21 +1,76 @@
 import User from '../domain/user.js'
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js'
 
+function validatePassword(password) {
+  const passwordPattern =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  return passwordPattern.test(password)
+}
+
+async function validateData({ firstName, lastName, email, password }) {
+  if (!firstName || firstName.length <= 3) {
+    return {
+      isValid: false,
+      message: 'Firstname has to be more than 3 characters'
+    }
+  }
+  if (!lastName || lastName.length <= 3) {
+    return {
+      isValid: false,
+      message: 'Lastname has to be more than 3 characters'
+    }
+  }
+  if (!validatePassword(password)) {
+    return {
+      isValid: false,
+      message:
+        'Password must contain at least one uppercase letter, one number, one special character, and be 8 characters long'
+    }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email || !emailRegex.test(email)) {
+    return { isValid: false, message: 'Email is not valid' }
+  }
+
+  return { isValid: true }
+}
+
 export const create = async (req, res) => {
-  const userToCreate = await User.fromJson(req.body)
+  const { firstName, lastName, email, password, bio, githubUrl } = req.body
+
+  // Validate input data
+  const validation = await validateData({
+    firstName,
+    lastName,
+    email,
+    password
+  })
+  if (!validation.isValid) {
+    return res.status(400).json({ message: validation.message })
+  }
 
   try {
-    const existingUser = await User.findByEmail(userToCreate.email)
-
+    const existingUser = await User.findByEmail(email)
+    console.log('existingUser:', existingUser)
     if (existingUser) {
-      return sendDataResponse(res, 400, { email: 'Email already in use' })
+      return res.status(400).json({ message: 'Email already in use' })
     }
 
-    const createdUser = await userToCreate.save()
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      bio,
+      githubUrl,
+      specialism: 'Software Developer'
+    })
 
-    return sendDataResponse(res, 201, createdUser)
+    return res.status(201).json({ status: 'success', data: { user: newUser } })
   } catch (error) {
-    return sendMessageResponse(res, 500, 'Unable to create new user')
+    console.error('Error creating new user:', error)
+    return res.status(500).json({ message: 'Unable to create new user' })
   }
 }
 

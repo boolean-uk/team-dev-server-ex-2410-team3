@@ -25,19 +25,17 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 app.use('/users', userRouter)
 app.use('/posts', postRouter)
-app.use('/comments', commentRouter)
 app.use('/cohorts', cohortRouter)
 app.use('/logs', deliveryLogRouter)
 app.use('/', authRouter)
+app.use('/comments', commentRouter)
 
-app.get('*', (req, res) => {
-  res.status(404).json({
-    status: 'fail',
-    data: {
-      resource: 'Not found'
-    }
-  })
-})
+/*
+function validatePassword(password) {
+  const passwordPattern =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  return passwordPattern.test(password)
+}
 
 async function validateData({ firstName, lastName, email, password }) {
   if (!firstName || firstName.length <= 3) {
@@ -52,10 +50,11 @@ async function validateData({ firstName, lastName, email, password }) {
       message: 'Lastname has to be more than 3 characters'
     }
   }
-  if (!password || password.length <= 8) {
+  if (!validatePassword(password)) {
     return {
       isValid: false,
-      message: 'Password has to be more than 8 characters'
+      message:
+        'Password must contain at least one uppercase letter, one number, one special character, and be 8 characters long'
     }
   }
 
@@ -64,57 +63,28 @@ async function validateData({ firstName, lastName, email, password }) {
     return { isValid: false, message: 'Email is not valid' }
   }
 
-  const passwordRegex =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
-  if (!passwordRegex.test(password)) {
-    return {
-      isValid: false,
-      message:
-        'Password must contain at least one uppercase letter, one number and one special character, and be 8 characters long'
-    }
-  }
   return { isValid: true }
 }
-
+**/
 app.post('/users', async (req, res) => {
   const { firstName, lastName, email, bio, githubUrl, password } = req.body
-  const validation = await validateData({
-    firstName,
-    lastName,
-    email,
-    password
-  })
-  if (!validation.isValid) {
-    return res.status(409).json({
-      status: 'Fail',
-      message: validation.message
-    })
-  }
 
   try {
-    const existingUser = await User._findByUnique({ where: { email } })
-    if (existingUser) {
-      return res.status(409).json({
-        status: 'Fail',
-        message: 'Email already exists'
-      })
-    }
     const newUser = await User.create({
       firstName,
       lastName,
       email,
       bio,
       githubUrl,
-      password
+      password,
+      specialism: 'Software Developer'
     })
     res.status(201).json({
       status: 'success',
-      data: {
-        user: newUser
-      }
+      data: { user: newUser }
     })
   } catch (err) {
-    res.status(409).json({
+    res.status(400).json({
       status: 'fail',
       message: err.message
     })

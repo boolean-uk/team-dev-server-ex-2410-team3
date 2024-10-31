@@ -27,6 +27,7 @@ model User {
   posts         Post[]
   comments      Comment[]
   deliveryLogs  DeliveryLog[]
+  specialism    String
 }
 
 model Profile {
