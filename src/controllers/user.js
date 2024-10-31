@@ -30,7 +30,7 @@ export const getById = async (req, res) => {
       return sendDataResponse(res, 404, { id: 'User not found' })
     }
 
-    return sendDataResponse(res, 200, foundUser);
+    return sendDataResponse(res, 200, foundUser)
   } catch (e) {
     return sendMessageResponse(res, 500, 'Unable to get user')
   }

@@ -21,7 +21,18 @@ export default class User {
   }
 
   static async fromJson(json) {
-    const { firstName, lastName, email, biography, password, specialism, username, githubUsername, profilePicture, mobile } = json
+    const {
+      firstName,
+      lastName,
+      email,
+      biography,
+      password,
+      specialism,
+      username,
+      githubUsername,
+      profilePicture,
+      mobile
+    } = json
     const passwordHash = await bcrypt.hash(password, 8)
 
     return new User(
@@ -44,14 +55,14 @@ export default class User {
   constructor(
     id,
     cohortId,
-    firstName = "",
-    lastName = "",
+    firstName = '',
+    lastName = '',
     email,
-    bio = "",
-    username = "",
-    githubUsername = "",
-    profilePicture = "",
-    mobile = "",
+    bio = '',
+    username = '',
+    githubUsername = '',
+    profilePicture = '',
+    mobile = '',
     passwordHash = null,
     role = 'STUDENT',
     specialism = 'Software Developer'
