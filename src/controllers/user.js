@@ -7,9 +7,40 @@ export const create = async (req, res) => {
 
   try {
     const existingUser = await User.findByEmail(userToCreate.email)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Email validation
 
     if (existingUser) {
       return sendDataResponse(res, 400, { email: 'Email already in use' })
+    }
+
+    if (
+      userToCreate.firstName.length <= 3 ||
+      userToCreate.lastName.length <= 3
+    ) {
+      return sendDataResponse(res, 400, {
+        name: 'First and last name must be at least 3 characters long'
+      })
+    }
+
+    if (!emailRegex.test(userToCreate.email)) {
+      return sendDataResponse(res, 400, { email: 'Invalid email address' })
+    }
+
+    if (!userToCreate.password) {
+      userToCreate.password = 'fail' // this prevents the program from crashing
+    }
+
+    if (
+      req.body.password.length < 8 ||
+      !/[A-Z]/.test(req.body.password) ||
+      !/[!@#$%^&*(),.?":{}|<>]/.test(req.body.password) ||
+      !/\d/.test(req.body.password)
+    ) {
+      return sendDataResponse(res, 401, {
+        status: 'fail',
+        message:
+          'The password should be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'
+      })
     }
 
     const createdUser = await userToCreate.save()
