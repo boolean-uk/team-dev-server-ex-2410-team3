@@ -195,4 +195,20 @@ export default class User {
     const foundUsers = await dbClient.user.findMany(query)
     return foundUsers.map((user) => User.fromDb(user))
   }
+
+  static async findManyByFirstName(firstName) {
+    try {
+      const users = await dbClient.user.findMany({
+        where: {
+          firstName: {
+            contains: firstName,
+            mode: 'insensitive'
+          }
+        }
+      })
+      return users
+    } catch (error) {
+      throw new Error('Error fetching users by first name: ' + error.message)
+    }
+  }
 }
