@@ -41,7 +41,7 @@ export default class Post {
         firstName: this.user.profile?.firstName,
         lastName: this.user.profile?.lastName,
         bio: this.user.profile?.bio,
-        githubUrl: this.user.profile?.githubUrl,
+        githubUsername: this.user.profile?.githubUsername,
         profileImageUrl: this.user.profile?.profileImageUrl
       }
     }

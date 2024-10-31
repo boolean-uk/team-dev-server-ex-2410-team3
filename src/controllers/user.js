@@ -103,7 +103,7 @@ export const updateById = async (req, res) => {
 }
 
 export const updateLoggedInUser = async (req, res) => {
-  let { firstName, lastName, email, bio, githubUrl, password } = req.body
+  let { firstName, lastName, email, bio, githubUsername, password } = req.body
 
   if (!password) {
     password = 'fail' // this prevents the program from crashing
@@ -163,7 +163,7 @@ export const updateLoggedInUser = async (req, res) => {
             firstName,
             lastName,
             bio,
-            githubUrl
+            githubUsername
           }
         }
       }
