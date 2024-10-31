@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+
 const prisma = new PrismaClient()
 
 async function seed() {
@@ -14,6 +15,7 @@ async function seed() {
     'Hello, world!',
     'student1'
   )
+
   const teacher = await createUser(
     'teacher@test.com',
     'Testpassword1!',
@@ -89,7 +91,7 @@ async function createUser(
   firstName,
   lastName,
   bio,
-  githubUrl,
+  username,
   role = 'STUDENT'
 ) {
   const user = await prisma.user.create({
@@ -103,7 +105,10 @@ async function createUser(
           firstName,
           lastName,
           bio,
-          githubUrl
+          username,
+          githubUsername: '',
+          profilePicture: '',
+          mobile: ''
         }
       }
     },
