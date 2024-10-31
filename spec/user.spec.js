@@ -57,7 +57,7 @@ describe('User Domain Model', () => {
         lastName: 'User',
         email: 'test@example.com',
         biography: 'Bio',
-        githubUsername: 'https://github.com/testuser',
+        githubUsername: 'githubuser',
         password: 'password123'
       }
 
@@ -78,7 +78,7 @@ describe('User Domain Model', () => {
         'User',
         'test@example.com',
         'Bio',
-        'https://github.com/testuser',
+        'githubuser',
         'hashedpassword',
         'STUDENT'
       )
@@ -97,7 +97,7 @@ describe('User Domain Model', () => {
         'User',
         'test@example.com',
         'Bio',
-        'https://github.com/testuser',
+        'githubuser',
         'hashedpassword'
       )
 

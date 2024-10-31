@@ -17,7 +17,7 @@ describe('Post Model', () => {
             firstName: 'Jane',
             lastName: 'Doe',
             bio: 'Student',
-            githubUsername: 'https://github.com/janedoe',
+            githubUsername: 'githubuser',
             profileImageUrl: 'https://example.com/profile.jpg'
           }
         },
@@ -72,7 +72,7 @@ describe('save', () => {
           firstName: 'Jane',
           lastName: 'Doe',
           bio: 'Student',
-          githubUsername: 'https://github.com/janedoe',
+          githubUsername: 'githubuser',
           profileImageUrl: 'https://example.com/profile.jpg'
         }
       },
@@ -115,7 +115,7 @@ describe('findById', () => {
           firstName: 'Jane',
           lastName: 'Doe',
           bio: 'Student',
-          githubUsername: 'https://github.com/janedoe',
+          githubUsername: 'githubuser',
           profileImageUrl: 'https://example.com/profile.jpg'
         }
       },
