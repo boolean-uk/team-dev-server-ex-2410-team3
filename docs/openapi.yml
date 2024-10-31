@@ -44,7 +44,7 @@ paths:
                   type: string
                 bio:
                   type: string
-                githubUrl:
+                githubUsername:
                   type: string
                 password:
                   type: string
@@ -666,7 +666,7 @@ components:
                       type: string
                     bio:
                       type: string
-                    githubUrl:
+                    githubUsername:
                       type: string
                     profileImageUrl:
                       type: string
@@ -873,7 +873,7 @@ components:
                             type: string
                           bio:
                             type: string
-                          githubUrl:
+                          githubUsername:
                             type: string
                           profileImageUrl:
                             type: string
