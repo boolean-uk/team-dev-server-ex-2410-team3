@@ -67,7 +67,7 @@ export default class Post {
                 firstName: true,
                 lastName: true,
                 bio: true,
-                githubUrl: true
+                githubUsername: true
               }
             }
           }
